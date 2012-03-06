@@ -12,3 +12,8 @@ goal is to provide a sane way for jobs on a given queue to be given special prio
 * Configurable number of threads per worker
 * Segmenting a single queue among multiple workers based on job characteristics (using AMQP header exchanges)
 * Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting
+
+## Acknowledgements
+
+Ganymede originated in a substantially modified version of the Workling background worker system, and still retains some code
+and structure from that project.
