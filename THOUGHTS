@@ -1,0 +1,83 @@
+How I want Ganymede to work:
+
+# app/workers/foo_bar_worker.rb
+class FooBarWorker < Ganymede::Worker
+
+  def foo(options)
+
+  end
+
+  def bar(options)
+
+  end
+
+end
+
+# somewhere that jobs are dispatched
+
+def do_a_thing(because)
+  @because = because
+  FooBarWorker.foo(self)
+end
+
+def to_ganymede
+  { 
+    :id => id,
+    :class => self.class.name,
+    :event_name => self.event.name,
+    :size => estimate_job_size,
+    :trigger => @because
+  }
+end
+
+# config/initializers/ganymede.rb
+
+# Default configuration: all workers listen to all jobs, one thread per job,
+# no filtering.
+Ganymede.configure do |config|
+  config.layout do |layout|
+    # layout.no_default_node! if you do not want a default node type
+    layout.node :bigjobs do |bigjobs|
+      bigjobs.worker :FooBarWorker, :only => { :size => "big" }, :threads => 2
+      bigjobs.worker :FooBarWorker, :only => { :size => "big", :trigger => "scheduled" }, :threads => 1
+    end
+    layout.default.worker :FooBarWorker, :only => { :size => "small", :trigger => "scheduled" }, :threads => 2
+    layout.default.worker :FooBarWorker, :only => { :size => "small", :trigger => "on-demand" }, :threads => 4
+    layout.default.worker :FooBarWorker, :only => { :size => "small", :trigger => "requested" }, :threads => 1
+  end
+  # config.middleware_out << Ganymede::Middleware::AutoSplatObjects
+end
+
+class Ganymede::Middleware::AutoSplatObjects
+
+  def call(*opts)
+    if opts.length == 1 and !opts.first.kind_of?(Hash)
+      if opts.respond_to?(:to_ganymede)
+        opts = opts.to_ganymede
+      end
+    end
+    yield opts
+  end
+
+end
+
+# equivalent to:
+layout = Ganymede::Layout.new
+default = Ganymede::Node.new(:default)
+default.default_configuration!
+default.add_worker Ganymede::Worker.new(:FooBarWorker, :only => { :size => "small", :trigger => "scheduled" }, :threads => 2)
+# ...
+layout.add_node default
+bigjobs = Ganymede::Node.new(:bigjobs)
+bigjobs.add_worker :FooBarWorker, :only => { :size => "big", :trigger => "scheduled" }, :threads => 1
+
+server = Ganymede::Server.new(layout, :default)
+server.start # FIAT LUX
+
+# ... later ...
+# ... We really need a special worker just allocated for HugeEvent
+
+default.add_worker Ganymede::Worker.new(:FooBarWorker, :only => { :event_name => "HugeEvent" }, :threads => 1
+
+# Loads the new layout and starts up new workers as required
+server.use_layout! layout
