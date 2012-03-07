@@ -63,13 +63,13 @@ end
 
 # equivalent to:
 layout = Ganymede::Layout.new
-default = Ganymede::Node.new(:default)
+default = Ganymede::Layout::Node.new(:default)
 default.default_configuration!
-default.add_worker Ganymede::Worker.new(:FooBarWorker, :only => { :size => "small", :trigger => "scheduled" }, :threads => 2)
+default.add_worker Ganymede::Layout::Worker.new(:FooBarWorker, :foo, :only => { :size => "small", :trigger => "scheduled" }, :threads => 2)
 # ...
 layout.add_node default
-bigjobs = Ganymede::Node.new(:bigjobs)
-bigjobs.add_worker :FooBarWorker, :only => { :size => "big", :trigger => "scheduled" }, :threads => 1
+bigjobs = Ganymede::Layout::Node.new(:bigjobs)
+bigjobs.add_worker Ganymede::Layout::Worker.new(:FooBarWorker, :foo, :only => { :size => "big", :trigger => "scheduled" }, :threads => 1)
 
 server = Ganymede::Server.new(layout, :default)
 server.start # FIAT LUX
@@ -77,7 +77,8 @@ server.start # FIAT LUX
 # ... later ...
 # ... We really need a special worker just allocated for HugeEvent
 
-default.add_worker Ganymede::Worker.new(:FooBarWorker, :only => { :event_name => "HugeEvent" }, :threads => 1
+default.add_worker Ganymede::Worker.new(:FooBarWorker, :foo, :only => { :event_name => "HugeEvent" }, :threads => 1
 
 # Loads the new layout and starts up new workers as required
-server.use_layout! layout
+server.layout = layout
+server.reload
