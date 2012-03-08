@@ -1,7 +1,10 @@
 module Ganymede
 
   class Server
+    include Celluloid
     include Ganymede::Util
+
+    attr_reader :layout, :node
 
     def initialize(layout = nil, node = nil)
       self.layout = layout
@@ -11,7 +14,7 @@ module Ganymede
     def layout=(value)
       expect_arg_or_nil :value, Ganymede::Layout, value
       @previous_layout = @layout
-      @layout = value
+      @layout = value ? value.frozen_clone : nil
     end
 
     def node=(value)
@@ -23,7 +26,7 @@ module Ganymede
     end
 
     def reload
-      dispatch_layout_changes
+      dispatch_layout_changes!
     end
 
     def shutdown

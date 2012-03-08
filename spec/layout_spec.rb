@@ -1,37 +1,50 @@
 require 'ganymede'
+require File.dirname(File.expand_path(__FILE__)) + '/shared_contexts'
+
+describe Ganymede::Layout do
+
+  context "#add_node" do
+
+    it "should only accept Ganymede::Node objects"
+
+  end
+
+  context "#frozen_clone" do
+      
+    it "should return a frozen copy where all sub-objects are also frozen copies"
+
+  end
+
+  context "#changes_from" do
+    
+    it "should return a Ganymede::Layout::Changes object where this layout is the new one"
+
+  end
+
+end
+
+describe Ganymede::Layout::Node do
+
+  context "#default_configuration!" do
+
+    it "should configure one worker thread for every job available"
+
+  end
+
+end
+
+describe Ganymede::Layout::Worker do
+
+  it "should default to 1 thread"
+
+  it "should default to a wide-open criteria"
+
+  it "should automatically convert the :only key to a Ganymede::QueueCriteria"
+
+end
 
 describe Ganymede::Layout::Changes do
-
-  let(:empty_layout) {
-    Ganymede::Layout.new
-  }
-
-  let(:populated_layout) {
-    Ganymede::Layout.new.tap do |layout|
-      layout.add_node Ganymede::Layout::Node.new(:default)
-      layout.node(:default).tap do |default|
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :foo)
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :foo, :only => { :size => "huge" })
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :bar, :threads => 3)
-      end
-      layout.add_node Ganymede::Layout::Node.new(:other)
-      layout.node(:other).tap do |default|
-        default.add_worker Ganymede::Layout::Worker.new(:OtherWorker, :bat)
-      end
-    end
-  }
-
-  let(:overlapping_layout) {
-    Ganymede::Layout.new.tap do |layout|
-      layout.add_node Ganymede::Layout::Node.new(:default)
-      layout.node(:default).tap do |default|
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :foo)
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :bar, :threads => 3)
-        default.add_worker Ganymede::Layout::Worker.new(:BarWorker, :baz)
-      end
-    end
-  }
-
+  it_should_behave_like "common"
 
   context "when the new layout is empty" do
 

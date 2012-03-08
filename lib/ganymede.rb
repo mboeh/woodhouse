@@ -22,6 +22,9 @@ module Ganymede
 
 end
 
+require 'fiber18'
+require 'celluloid'
 require 'ganymede/layout'
+require 'ganymede/scheduler'
 require 'ganymede/server'
 require 'ganymede/queue_criteria'
