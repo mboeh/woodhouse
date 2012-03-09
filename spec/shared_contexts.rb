@@ -1,3 +1,5 @@
+Celluloid.logger = nil
+
 shared_examples_for "common" do
 
   let(:empty_layout) {
