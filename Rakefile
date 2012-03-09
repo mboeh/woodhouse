@@ -1,22 +1,11 @@
+require 'rubygems'
 require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
+require 'bundler/setup'
 
-desc 'Default: run unit tests.'
-task :default => :test
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
-desc 'Test the loopy_workling plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
-end
+require 'spec/rake/spectask'
 
-desc 'Generate documentation for the loopy_workling plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'LoopyWorkling'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README.markdown')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+Spec::Rake::SpecTask.new do |t|
 end
