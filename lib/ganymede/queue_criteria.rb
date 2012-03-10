@@ -16,6 +16,18 @@ module Ganymede
       @criteria == other.criteria
     end
 
+    def amqp_headers
+      # TODO: needs to be smarter
+      @criteria ? @criteria.merge('x-match' => 'all') : {}
+    end
+
+    def matches?(args)
+      return true if @criteria.nil?
+      @criteria.all? do |key, val|
+        args[key] == val.to_s
+      end
+    end
+
   end
 
 end

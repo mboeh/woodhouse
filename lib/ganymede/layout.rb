@@ -83,6 +83,10 @@ module Ganymede
         self.criteria = opts[:only]
       end
       
+      def exchange_name
+        "#{worker_class_name}_#{job_method}".downcase
+      end
+
       def worker_class_name=(value)
         @worker_class_name = value.to_sym
       end

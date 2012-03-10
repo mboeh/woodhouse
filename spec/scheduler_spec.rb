@@ -4,11 +4,7 @@ require File.dirname(File.expand_path(__FILE__)) + '/shared_contexts'
 describe Ganymede::Scheduler do
   it_should_behave_like "common"
 
-  class FakeWorker
-
-  end
-
-  subject { Ganymede::Scheduler.new({:FooBarWorker => FakeWorker}) }
+  subject { Ganymede::Scheduler.new(common_config) }
 
   let(:worker) {
     Ganymede::Layout::Worker.new(:FooBarWorker, :foo)

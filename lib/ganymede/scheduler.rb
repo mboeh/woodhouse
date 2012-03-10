@@ -2,8 +2,6 @@ class Ganymede::Scheduler
   include Ganymede::Util
   include Celluloid
 
-  trap_exit :worker_set_finished
-
   class SpunDown < StandardError
 
   end
@@ -14,10 +12,12 @@ class Ganymede::Scheduler
 
     attr_reader :worker
 
-    def initialize(worker)
+    def initialize(worker, config)
       expect_arg_or_nil :worker, Ganymede::Layout::Worker, worker
       @worker_def = worker
+      @config = config
       @threads = []
+      spin_up
     end
 
     def spin_down
@@ -25,26 +25,30 @@ class Ganymede::Scheduler
       @threads.each do |thread|
         thread.spin_down
       end
-      check_if_done
+      signal :spun_down
+    end
+
+    def wait_until_done
+      wait :spun_down
     end
 
     private
 
-    def check_if_done
-      if @spinning_down and @threads.empty?
-        raise SpunDown
+    def spin_up
+      @worker_def.threads.times do
+        @threads << @config.worker_type.new_link(@worker_def, @config)
       end
     end
 
   end
 
-  def initialize(registry)
-    @registry = registry
+  def initialize(config)
+    @config = config
     @worker_sets = {}
   end
 
   def start_worker(worker)
-    @worker_sets[worker] = WorkerSet.new_link(worker) unless @worker_sets.has_key?(worker)
+    @worker_sets[worker] = WorkerSet.new_link(worker, @config) unless @worker_sets.has_key?(worker)
   end
 
   def stop_worker(worker, wait = false)
@@ -62,25 +66,10 @@ class Ganymede::Scheduler
     @worker_sets.each do |worker, set|
       set.spin_down!
     end
-    check_if_done
-    wait :done
-  end
-
-  def worker_set_finished(actor, reason)
-    if reason.kind_of? SpunDown
-      @worker_sets.delete_if{|k,v| v == actor}
-      check_if_done
-    else
-      # TODO: worker set bombed out. You fixulate this!
-      raise reason
-    end
-  end
-
-  private
-
-  def check_if_done
-    if @spinning_down and @worker_sets.empty?
-      signal :done
+    @worker_sets.keys.each do |worker|
+      set = @worker_sets[worker]
+      set.wait_until_done
+      @worker_sets.delete(worker)
     end
   end
 

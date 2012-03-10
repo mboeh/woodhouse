@@ -1,4 +1,25 @@
-Celluloid.logger = nil
+#Celluloid.logger = nil
+
+class FakeWorker
+
+  class << self
+    attr_accessor :last_worker
+    attr_accessor :jobs
+  end
+
+  def initialize
+    FakeWorker.last_worker = self
+    FakeWorker.jobs ||= []
+  end
+
+  def foo(args)
+
+    FakeWorker.jobs << args
+  end
+
+end
+
+require 'ganymede/bunny_worker_process' 
 
 shared_examples_for "common" do
 
@@ -32,5 +53,11 @@ shared_examples_for "common" do
     end
   }
 
+  let(:common_config) {
+    Ganymede::NodeConfiguration.new do |config|
+      config.registry = { :FooBarWorker => FakeWorker }
+      config.worker_type = Ganymede::BunnyWorkerProcess
+    end
+  }
 
 end
