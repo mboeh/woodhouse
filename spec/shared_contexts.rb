@@ -19,44 +19,44 @@ class FakeWorker
 
 end
 
-require 'ganymede/bunny_worker_process' 
+require 'woodhouse/bunny_worker_process' 
 
 shared_examples_for "common" do
 
   let(:empty_layout) {
-    Ganymede::Layout.new
+    Woodhouse::Layout.new
   }
 
   let(:populated_layout) {
-    Ganymede::Layout.new.tap do |layout|
-      layout.add_node Ganymede::Layout::Node.new(:default)
+    Woodhouse::Layout.new.tap do |layout|
+      layout.add_node Woodhouse::Layout::Node.new(:default)
       layout.node(:default).tap do |default|
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :foo)
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :foo, :only => { :size => "huge" })
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :bar, :threads => 3)
+        default.add_worker Woodhouse::Layout::Worker.new(:FooWorker, :foo)
+        default.add_worker Woodhouse::Layout::Worker.new(:FooWorker, :foo, :only => { :size => "huge" })
+        default.add_worker Woodhouse::Layout::Worker.new(:FooWorker, :bar, :threads => 3)
       end
-      layout.add_node Ganymede::Layout::Node.new(:other)
+      layout.add_node Woodhouse::Layout::Node.new(:other)
       layout.node(:other).tap do |default|
-        default.add_worker Ganymede::Layout::Worker.new(:OtherWorker, :bat)
+        default.add_worker Woodhouse::Layout::Worker.new(:OtherWorker, :bat)
       end
     end
   }
 
   let(:overlapping_layout) {
-    Ganymede::Layout.new.tap do |layout|
-      layout.add_node Ganymede::Layout::Node.new(:default)
+    Woodhouse::Layout.new.tap do |layout|
+      layout.add_node Woodhouse::Layout::Node.new(:default)
       layout.node(:default).tap do |default|
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :foo)
-        default.add_worker Ganymede::Layout::Worker.new(:FooWorker, :bar, :threads => 3)
-        default.add_worker Ganymede::Layout::Worker.new(:BarWorker, :baz)
+        default.add_worker Woodhouse::Layout::Worker.new(:FooWorker, :foo)
+        default.add_worker Woodhouse::Layout::Worker.new(:FooWorker, :bar, :threads => 3)
+        default.add_worker Woodhouse::Layout::Worker.new(:BarWorker, :baz)
       end
     end
   }
 
   let(:common_config) {
-    Ganymede::NodeConfiguration.new do |config|
+    Woodhouse::NodeConfiguration.new do |config|
       config.registry = { :FooBarWorker => FakeWorker }
-      config.worker_type = Ganymede::BunnyWorkerProcess
+      config.worker_type = Woodhouse::BunnyWorkerProcess
     end
   }
 

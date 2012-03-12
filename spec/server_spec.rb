@@ -1,18 +1,18 @@
-require 'ganymede'
+require 'woodhouse'
 require File.dirname(File.expand_path(__FILE__)) + '/shared_contexts'
 
-describe Ganymede::Server do
+describe Woodhouse::Server do
   it_should_behave_like "common"
 
-  subject { Ganymede::Server.new }
+  subject { Woodhouse::Server.new }
 
   it "should default to the :default node" do
     subject.node.should == :default
   end
 
   it "should expect the value to #layout= to be nil or a Layout" do
-    subject.layout = Ganymede::Layout.new
-    subject.layout.should be_kind_of Ganymede::Layout
+    subject.layout = Woodhouse::Layout.new
+    subject.layout.should be_kind_of Woodhouse::Layout
     subject.layout = nil
     subject.layout.should be_nil
     expect do
@@ -21,7 +21,7 @@ describe Ganymede::Server do
   end
 
   it "should take a frozen clone of the layout" do
-    layout = Ganymede::Layout.new
+    layout = Woodhouse::Layout.new
     subject.layout = layout
     subject.layout.should_not be layout
     subject.layout.should be_frozen

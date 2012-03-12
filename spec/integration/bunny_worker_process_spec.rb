@@ -1,15 +1,15 @@
-require 'ganymede'
+require 'woodhouse'
 require File.dirname(File.expand_path(__FILE__)) + '/../shared_contexts'
 
-describe Ganymede::BunnyWorkerProcess do
+describe Woodhouse::BunnyWorkerProcess do
   it_should_behave_like "common"
 
   let(:scheduler) {
-    Ganymede::Scheduler.new(common_config)
+    Woodhouse::Scheduler.new(common_config)
   }
 
   let(:worker) {
-    Ganymede::Layout::Worker.new(:FooBarWorker, :foo, :only => { :orz => "*happy campers*" })
+    Woodhouse::Layout::Worker.new(:FooBarWorker, :foo, :only => { :orz => "*happy campers*" })
   }
 
   it "should pull jobs off a queue" do

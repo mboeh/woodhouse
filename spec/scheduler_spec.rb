@@ -1,17 +1,17 @@
-require 'ganymede'
+require 'woodhouse'
 require File.dirname(File.expand_path(__FILE__)) + '/shared_contexts'
 
-describe Ganymede::Scheduler do
+describe Woodhouse::Scheduler do
   it_should_behave_like "common"
 
-  subject { Ganymede::Scheduler.new(common_config) }
+  subject { Woodhouse::Scheduler.new(common_config) }
 
   let(:worker) {
-    Ganymede::Layout::Worker.new(:FooBarWorker, :foo)
+    Woodhouse::Layout::Worker.new(:FooBarWorker, :foo)
   }
 
   let(:worker_2) {
-    Ganymede::Layout::Worker.new(:FooBarWorker, :foo, :only => { :job => "big" })
+    Woodhouse::Layout::Worker.new(:FooBarWorker, :foo, :only => { :job => "big" })
   } 
 
   if false

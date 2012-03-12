@@ -1,11 +1,11 @@
-require 'ganymede'
+require 'woodhouse'
 require File.dirname(File.expand_path(__FILE__)) + '/shared_contexts'
 
-describe Ganymede::Layout do
+describe Woodhouse::Layout do
 
   context "#add_node" do
 
-    it "should only accept Ganymede::Node objects"
+    it "should only accept Woodhouse::Node objects"
 
   end
 
@@ -17,13 +17,13 @@ describe Ganymede::Layout do
 
   context "#changes_from" do
     
-    it "should return a Ganymede::Layout::Changes object where this layout is the new one"
+    it "should return a Woodhouse::Layout::Changes object where this layout is the new one"
 
   end
 
 end
 
-describe Ganymede::Layout::Node do
+describe Woodhouse::Layout::Node do
 
   context "#default_configuration!" do
 
@@ -33,22 +33,22 @@ describe Ganymede::Layout::Node do
 
 end
 
-describe Ganymede::Layout::Worker do
+describe Woodhouse::Layout::Worker do
 
   it "should default to 1 thread"
 
   it "should default to a wide-open criteria"
 
-  it "should automatically convert the :only key to a Ganymede::QueueCriteria"
+  it "should automatically convert the :only key to a Woodhouse::QueueCriteria"
 
 end
 
-describe Ganymede::Layout::Changes do
+describe Woodhouse::Layout::Changes do
   it_should_behave_like "common"
 
   context "when the new layout is empty" do
 
-    subject { Ganymede::Layout::Changes.new(empty_layout, populated_layout, :default) }
+    subject { Woodhouse::Layout::Changes.new(empty_layout, populated_layout, :default) }
 
     it "should drop all workers and add none" do
       subject.adds.should be_empty
@@ -59,7 +59,7 @@ describe Ganymede::Layout::Changes do
 
   context "when the old layout is empty" do
 
-    subject { Ganymede::Layout::Changes.new(populated_layout, empty_layout, :default) }
+    subject { Woodhouse::Layout::Changes.new(populated_layout, empty_layout, :default) }
 
     it "should add all workers and drop none" do
       subject.drops.should be_empty
@@ -70,7 +70,7 @@ describe Ganymede::Layout::Changes do
 
   context "when the new layout is nil" do
     
-    subject { Ganymede::Layout::Changes.new(nil, populated_layout, :default) }
+    subject { Woodhouse::Layout::Changes.new(nil, populated_layout, :default) }
 
     it "should drop all workers and add none" do
       subject.adds.should be_empty
@@ -81,7 +81,7 @@ describe Ganymede::Layout::Changes do
 
   context "when the old layout is nil" do
 
-    subject { Ganymede::Layout::Changes.new(populated_layout, nil, :default) }
+    subject { Woodhouse::Layout::Changes.new(populated_layout, nil, :default) }
 
     it "should add all workers and drop none" do
       subject.drops.should be_empty
@@ -92,7 +92,7 @@ describe Ganymede::Layout::Changes do
 
   context "when both layouts are specified and they overlap" do
 
-    subject { Ganymede::Layout::Changes.new(overlapping_layout, populated_layout, :default) }
+    subject { Woodhouse::Layout::Changes.new(overlapping_layout, populated_layout, :default) }
 
     it "should add some workers, drop some, and leave some alone" do
       subject.drops.should have(1).dropped_worker
