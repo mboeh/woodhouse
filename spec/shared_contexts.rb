@@ -13,7 +13,10 @@ class FakeWorker
   end
 
   def foo(args)
+    FakeWorker.jobs << args
+  end
 
+  def bar(args)
     FakeWorker.jobs << args
   end
 

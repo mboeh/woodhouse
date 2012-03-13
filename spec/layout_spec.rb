@@ -24,10 +24,23 @@ describe Woodhouse::Layout do
 end
 
 describe Woodhouse::Layout::Node do
+  it_should_behave_like "common"
 
   context "#default_configuration!" do
 
-    it "should configure one worker thread for every job available"
+    it "should configure one worker thread for every job available" do
+      layout = empty_layout
+      config = common_config
+      config.registry = {
+        :FooBarWorker => FakeWorker,
+        :BarBazWorker => FakeWorker,
+        :BazBatWorker => FakeWorker
+      }
+      layout.add_node Woodhouse::Layout::Node.new(:default)
+      layout.node(:default).default_configuration! config
+      layout.node(:default).workers.should have(6).workers
+      # FooBar#foo, FooBar#bar, BarBaz#foo...
+    end
 
   end
 

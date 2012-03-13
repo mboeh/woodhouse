@@ -57,8 +57,12 @@ module Woodhouse
         @workers << worker
       end
 
-      def default_configuration!
-        # TODO
+      def default_configuration!(config)
+        config.registry.each do |name, klass|
+          klass.public_instance_methods(false).each do |method|
+            add_worker Woodhouse::Layout::Worker.new(name, method)
+          end
+        end
       end
       
       def frozen_clone
