@@ -22,15 +22,19 @@ module Woodhouse
     end
 
     def start
+      # TODO: don't pass global config
+      @scheduler ||= Woodhouse::Scheduler.new_link(Woodhouse.global_configuration)
       dispatch_layout_changes
     end
 
     def reload
       dispatch_layout_changes!
     end
-
+    
+    # TODO: do this better
     def shutdown
-      # TODO
+      @scheduler.spin_down
+      signal :shutdown
     end
 
     private
@@ -44,7 +48,14 @@ module Woodhouse
     end
 
     def apply_layout_changes(changes)
-      # TODO
+      if @scheduler
+        changes.adds.each do |add|
+          @scheduler.start_worker(add)
+        end
+        changes.drops.each do |drop|
+          @scheduler.stop_worker(drop)
+        end
+      end
     end
 
   end

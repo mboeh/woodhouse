@@ -7,6 +7,7 @@ class Woodhouse::WorkerProcess
   def initialize(worker, config)
     @worker = worker
     @config = config
+    puts "starting #{@worker.inspect} worker"
     subscribe!
   end
 
@@ -25,7 +26,7 @@ class Woodhouse::WorkerProcess
   end
 
   def service_job(job)
-    @config.registry[job.worker_class_name].new.send(job.job_method, job.arguments)
+    Woodhouse::JobExecution.new(@config, job).execute 
   end
 
 end

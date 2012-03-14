@@ -17,7 +17,7 @@ class Woodhouse::MixinRegistry < Woodhouse::Registry
   end
 
   def each(&blk)
-    Woodhouse::MixinRegistry.each &blk
+    Woodhouse::MixinRegistry.classes.each &blk
   end
 
 end

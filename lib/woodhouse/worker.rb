@@ -5,6 +5,8 @@ module Woodhouse::Worker
     into.set_worker_name into.name unless into.name.nil?
   end
 
+  attr_accessor :logger
+
   module ClassMethods
     
     def worker_name
@@ -25,7 +27,7 @@ module Woodhouse::Worker
     def method_missing(method, *args, &block)
       if method.to_s =~ /^asynch?_(.*)/
         if instance_methods(false).detect{|meth| meth.to_s == $1 }
-          # TODO: dispatch job
+          Woodhouse.dispatch(@worker_name, $1, args.first)
         else
           super
         end

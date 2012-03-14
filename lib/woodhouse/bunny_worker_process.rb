@@ -5,7 +5,7 @@ class Woodhouse::BunnyWorkerProcess < Woodhouse::WorkerProcess
   include Celluloid
 
   def subscribe
-    bunny = Bunny.new
+    bunny = Bunny.new(@config.server_info)
     bunny.start
     bunny.qos(:prefetch_count => 1)
     queue = bunny.queue
@@ -38,7 +38,7 @@ class Woodhouse::BunnyWorkerProcess < Woodhouse::WorkerProcess
   def make_job(message)
     Woodhouse::Job.new(@worker.worker_class_name, @worker.job_method) do |job|
       args = message[:header].properties.merge(:payload => message[:payload])
-      args.merge!(args.delete(:headers))
+      args.merge!(args.delete(:headers) || {})
       job.arguments = args
     end
   end
