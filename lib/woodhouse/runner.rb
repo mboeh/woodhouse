@@ -1,5 +1,3 @@
-require 'woodhouse/job'
-
 class Woodhouse::Runner
   include Woodhouse::Util
   include Celluloid
@@ -7,7 +5,6 @@ class Woodhouse::Runner
   def initialize(worker, config)
     @worker = worker
     @config = config
-    puts "starting #{@worker.inspect} worker"
     subscribe!
   end
 

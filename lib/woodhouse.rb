@@ -55,6 +55,7 @@ end
 
 require 'fiber18'
 require 'celluloid'
+require 'woodhouse/job'
 require 'woodhouse/layout'
 require 'woodhouse/scheduler'
 require 'woodhouse/server'

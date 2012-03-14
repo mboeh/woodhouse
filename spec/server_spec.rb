@@ -15,9 +15,15 @@ describe Woodhouse::Server do
     subject.layout.should be_kind_of Woodhouse::Layout
     subject.layout = nil
     subject.layout.should be_nil
-    expect do
-      subject.layout = "foo"
-    end.to raise_error
+    begin
+      oldlogger = Celluloid.logger
+      Celluloid.logger = nil # It's going to crash
+      expect do
+        subject.layout = "foo"
+      end.to raise_error
+    ensure
+      Celluloid.logger = oldlogger
+    end
   end
 
   it "should take a frozen clone of the layout" do
