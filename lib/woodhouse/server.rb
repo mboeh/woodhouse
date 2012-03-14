@@ -24,13 +24,19 @@ module Woodhouse
     def start
       # TODO: don't pass global config
       @scheduler ||= Woodhouse::Scheduler.new_link(Woodhouse.global_configuration)
+      return false unless ready_to_start?
       dispatch_layout_changes
+      true
     end
 
     def reload
       dispatch_layout_changes!
     end
     
+    def ready_to_start?
+      @node and @layout and @layout.node(@node)
+    end
+
     # TODO: do this better
     def shutdown
       @scheduler.spin_down

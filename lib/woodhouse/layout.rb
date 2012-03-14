@@ -12,6 +12,9 @@ module Woodhouse
     end
 
     def add_node(node)
+      if node.respond_to?(:to_sym)
+        node = Woodhouse::Layout::Node.new(node.to_sym)  
+      end
       expect_arg :node, Woodhouse::Layout::Node, node
       @nodes << node
     end
@@ -32,6 +35,13 @@ module Woodhouse
 
     def changes_from(other_layout, node)
       Woodhouse::Layout::Changes.new(self, other_layout, node)
+    end
+
+    def self.default
+      new.tap do |layout|
+        layout.add_node :default
+        layout.node(:default).default_configuration!(Woodhouse.global_configuration)
+      end
     end
 
     protected
@@ -60,7 +70,7 @@ module Woodhouse
       def default_configuration!(config)
         config.registry.each do |name, klass|
           klass.public_instance_methods(false).each do |method|
-            add_worker Woodhouse::Layout::Worker.new(name, method)
+            add_worker Woodhouse::Layout::Worker.new(name, method, :threads => config.default_threads)
           end
         end
       end

@@ -26,6 +26,19 @@ end
 describe Woodhouse::Layout::Node do
   it_should_behave_like "common"
 
+  context "#add_node" do
+    
+    it "should take a string or a symbol and create a node with that name" do
+      empty_layout.add_node :orz
+      empty_layout.add_node 'vux'
+      empty_layout.add_node Woodhouse::Layout::Node.new(:androsynth)
+      empty_layout.node(:orz).should be_kind_of(Woodhouse::Layout::Node)
+      empty_layout.node(:vux).should be_kind_of(Woodhouse::Layout::Node)
+      empty_layout.node(:androsynth).should be_kind_of(Woodhouse::Layout::Node)
+    end
+
+  end
+
   context "#default_configuration!" do
 
     it "should configure one worker thread for every job available" do
@@ -40,6 +53,19 @@ describe Woodhouse::Layout::Node do
       layout.node(:default).default_configuration! config
       layout.node(:default).workers.should have(6).workers
       # FooBar#foo, FooBar#bar, BarBaz#foo...
+    end
+
+    it "should pay attention to the config's default_threads" do
+      layout = empty_layout
+      config = common_config
+      config.default_threads = 10
+      config.registry = {
+        :OrzWorker => FakeWorker
+      }
+      layout.add_node :default
+      layout.node(:default).default_configuration! config
+      layout.node(:default).workers.should have(2).workers
+      layout.node(:default).workers.first.threads.should == 10
     end
 
   end

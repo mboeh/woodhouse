@@ -14,7 +14,6 @@ describe Woodhouse::Scheduler do
     Woodhouse::Layout::Worker.new(:FooBarWorker, :foo, :only => { :job => "big" })
   } 
 
-  if false
   it "should create a new worker set when a new worker is sent to #start_worker" do
     subject.start_worker worker
     subject.should be_running_worker(worker)
@@ -30,7 +29,6 @@ describe Woodhouse::Scheduler do
     subject.start_worker worker
     subject.stop_worker worker, true
     subject.should_not be_running_worker(worker)
-  end
   end
 
   it "should spin down and remove all worker sets when #spin_down is called" do

@@ -22,8 +22,6 @@ class FakeWorker
 
 end
 
-require 'woodhouse/bunny_worker_process' 
-
 shared_examples_for "common" do
 
   let(:empty_layout) {
@@ -56,7 +54,7 @@ shared_examples_for "common" do
     end
   }
 
-  let(:common_config) {
+  let!(:common_config) {
     Woodhouse::NodeConfiguration.new do |config|
       config.registry = { :FooBarWorker => FakeWorker }
       config.worker_type = Woodhouse::BunnyWorkerProcess

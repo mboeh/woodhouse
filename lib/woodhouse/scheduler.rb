@@ -12,8 +12,9 @@ class Woodhouse::Scheduler
 
     attr_reader :worker
 
-    def initialize(worker, config)
+    def initialize(scheduler, worker, config)
       expect_arg_or_nil :worker, Woodhouse::Layout::Worker, worker
+      @scheduler = scheduler
       @worker_def = worker
       @config = config
       @threads = []
@@ -25,6 +26,7 @@ class Woodhouse::Scheduler
       @threads.each do |thread|
         thread.spin_down
       end
+      @scheduler.remove_worker(@worker_def)
       signal :spun_down
     end
 
@@ -48,12 +50,13 @@ class Woodhouse::Scheduler
   end
 
   def start_worker(worker)
-    @worker_sets[worker] = WorkerSet.new_link(worker, @config) unless @worker_sets.has_key?(worker)
+    @worker_sets[worker] = WorkerSet.new_link(Celluloid.current_actor, worker, @config) unless @worker_sets.has_key?(worker)
   end
 
   def stop_worker(worker, wait = false)
     if set = @worker_sets[worker]
-      wait ? set.spin_down : set.spin_down!
+      set.spin_down!
+      set.wait_until_done if wait
     end
   end
   
@@ -69,8 +72,12 @@ class Woodhouse::Scheduler
     @worker_sets.keys.each do |worker|
       set = @worker_sets[worker]
       set.wait_until_done
-      @worker_sets.delete(worker)
     end
   end
 
+  protected
+
+  def remove_worker(worker)
+    @worker_sets.delete(worker)
+  end
 end

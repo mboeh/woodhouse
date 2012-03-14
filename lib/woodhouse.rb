@@ -24,12 +24,18 @@ module Woodhouse
   # some of this down into NodeConfiguration or something like it.
   class << self
 
-    attr_reader :global_configuration
+    def global_configuration
+      @global_configuration ||= Woodhouse::NodeConfiguration.default
+    end
+
     def configure(&blk)
       @global_configuration = Woodhouse::NodeConfiguration.new(&blk)
     end
   
-    attr_reader :global_layout
+    def global_layout
+      @global_layout ||= Woodhouse::Layout.default
+    end
+
     def layout(&blk)
       @global_layout = Woodhouse::Layout.new.tap(&blk)
     end
