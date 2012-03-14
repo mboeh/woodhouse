@@ -17,6 +17,11 @@ module Woodhouse
     def expect_arg_or_nil(name, klass, value)
       expect_arg(name, klass, value) unless value.nil?
     end
+  
+    # Cheap knockoff, suffices for my simple purposes
+    def camelize(string)
+      string.split(/_/).map{ |word| word.capitalize }.join('')
+    end
 
   end
 
@@ -58,8 +63,6 @@ require 'woodhouse/node_configuration'
 require 'woodhouse/registry'
 require 'woodhouse/mixin_registry'
 require 'woodhouse/worker'
-require 'woodhouse/dispatcher'
-require 'woodhouse/local_dispatcher'
 require 'woodhouse/job_execution'
-require 'woodhouse/bunny_dispatcher'
 require 'woodhouse/runners'
+require 'woodhouse/dispatchers'

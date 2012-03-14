@@ -1,6 +1,6 @@
 require 'bunny'
 
-class Woodhouse::BunnyDispatcher < Woodhouse::Dispatcher
+class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
 
   def initialize(config)
     super
