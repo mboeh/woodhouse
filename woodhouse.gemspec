@@ -6,11 +6,15 @@ Gem::Specification.new do |s|
   s.name        = "woodhouse"
   s.version     = Woodhouse::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.authors     = ["Matthew Boeh"]
+  s.email       = ["matt@crowdcompass.com", "matthew.boeh@gmail.com"]
+  s.homepage    = "http://github.com/mboeh/woodhouse"
+  s.summary     = %q{An AMQP-based background worker system for Ruby 1.8 and 1.9}
+  s.description = %q{An AMQP-based background worker system for Ruby 1.8 and 1.9 designed to make managing heterogenous tasks relatively easy.
+  
+  The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary goal is to provide a sane way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.
+  
+  Clients (i.e., your application) may be using either Ruby 1.8 or 1.9 in any VM. Worker processes currently only support JRuby in 1.8 or 1.9 mode efficiently. MRI 1.9 and Rubinius support is planned.}
 
   s.rubyforge_project = "woodhouse"
 
