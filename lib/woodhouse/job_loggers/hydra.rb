@@ -1,4 +1,4 @@
-class Workling::JobLoggers::Hydra
+class Woodhouse::JobLoggers::Hydra
 
   def initialize(*loggers)
     @loggers = loggers.flatten

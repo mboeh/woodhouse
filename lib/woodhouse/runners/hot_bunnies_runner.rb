@@ -1,4 +1,4 @@
-class Woodhouse::HotBunniesWorkerProcess < Woodhouse::WorkerProcess
+class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
   begin
     require 'hot_bunnies'
   rescue LoadError => err

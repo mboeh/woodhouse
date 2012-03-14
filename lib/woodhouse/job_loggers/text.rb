@@ -1,4 +1,4 @@
-class Workling::JobLoggers::Text
+class Woodhouse::JobLoggers::Text
 
   def initialize(logpath, level = Logger::INFO)
     if logpath.kind_of?(String)

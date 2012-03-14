@@ -1,7 +1,7 @@
 require 'woodhouse'
 require File.dirname(File.expand_path(__FILE__)) + '/../shared_contexts'
 
-describe Woodhouse::BunnyWorkerProcess do
+describe Woodhouse::Runners::BunnyRunner do
   it_should_behave_like "common"
 
   let(:scheduler) {

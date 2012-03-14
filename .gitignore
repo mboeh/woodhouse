@@ -2,3 +2,4 @@
 .bundle
 .binstubs
 Gemfile.lock
+html/

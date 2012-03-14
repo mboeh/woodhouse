@@ -1,5 +1,5 @@
 class Woodhouse::NodeConfiguration < 
-  Struct.new(:registry, :server_info, :worker_type, :dispatcher, :logger, :default_threads)
+  Struct.new(:registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threads)
 
   def initialize(*)
     super
@@ -15,11 +15,11 @@ class Woodhouse::NodeConfiguration <
   # TODO: detect defaults based on platform
   def self.default
     new do |config|
-      config.registry    = Woodhouse::MixinRegistry.new
-      config.server_info = nil
-      config.worker_type = Woodhouse::BunnyWorkerProcess
-      config.dispatcher  = Woodhouse::LocalDispatcher
-      config.logger      = Logger.new("/dev/null") 
+      config.registry         = Woodhouse::MixinRegistry.new
+      config.server_info      = nil
+      config.runner_type      = Woodhouse::Runners::BunnyRunner
+      config.dispatcher_type  = Woodhouse::LocalDispatcher
+      config.logger           = Logger.new("/dev/null") 
     end
   end
 

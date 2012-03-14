@@ -1,6 +1,6 @@
 require 'gelf'
 
-class Workling::JobLoggers::GELF < Workling::JobLoggers::Text
+class Woodhouse::JobLoggers::GELF < Woodhouse::JobLoggers::Text
 
   def initialize(*args)
     @logger = ::GELF::Logger.new(*args)

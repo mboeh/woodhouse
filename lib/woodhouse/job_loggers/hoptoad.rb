@@ -1,4 +1,4 @@
-class Workling::JobLoggers::Hoptoad
+class Woodhouse::JobLoggers::Hoptoad
 
   def initialize
 

@@ -1,7 +1,6 @@
 require 'bunny'
-require 'woodhouse/worker_process'
 
-class Woodhouse::BunnyWorkerProcess < Woodhouse::WorkerProcess
+class Woodhouse::Runners::BunnyRunner < Woodhouse::Runner
   include Celluloid
 
   def subscribe

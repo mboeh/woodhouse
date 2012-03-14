@@ -1,6 +1,6 @@
 require 'mongo'
 
-class Workling::JobLoggers::MongoLog
+class Woodhouse::JobLoggers::MongoLog
 
   attr_reader :collection
 

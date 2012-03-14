@@ -1,6 +1,6 @@
 require 'woodhouse/job'
 
-class Woodhouse::WorkerProcess
+class Woodhouse::Runner
   include Woodhouse::Util
   include Celluloid
 
@@ -12,13 +12,13 @@ class Woodhouse::WorkerProcess
   end
 
   def spin_down
-    raise NotImplementedError, "implement #spin_down in a subclass of Woodhouse::WorkerProcess"
+    raise NotImplementedError, "implement #spin_down in a subclass of Woodhouse::Runner"
   end
 
   private
 
   def subscribe
-    raise NotImplementedError, "implement #subscribe in a subclass of Woodhouse::WorkerProcess"
+    raise NotImplementedError, "implement #subscribe in a subclass of Woodhouse::Runner"
   end
   
   def can_service_job?(job)

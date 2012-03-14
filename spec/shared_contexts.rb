@@ -57,7 +57,7 @@ shared_examples_for "common" do
   let!(:common_config) {
     Woodhouse::NodeConfiguration.new do |config|
       config.registry = { :FooBarWorker => FakeWorker }
-      config.worker_type = Woodhouse::BunnyWorkerProcess
+      config.runner_type = Woodhouse::Runners::BunnyRunner
     end
   }
 

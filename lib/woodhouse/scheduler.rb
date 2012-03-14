@@ -38,7 +38,7 @@ class Woodhouse::Scheduler
 
     def spin_up
       @worker_def.threads.times do
-        @threads << @config.worker_type.new_link(@worker_def, @config)
+        @threads << @config.runner_type.new_link(@worker_def, @config)
       end
     end
 
