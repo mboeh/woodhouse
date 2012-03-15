@@ -1,10 +1,19 @@
 = Woodhouse
 
+{<img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status" />}[http://travis-ci.org/mboeh/woodhouse]
+
 An AMQP-based background worker system for Ruby 1.8 and 1.9 designed to make managing heterogenous tasks relatively easy.
 
 The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly
 in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary
 goal is to provide a sane way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.
+
+== Usage
+
+Woodhouse is currently being developed. It is not production-ready, and is liable to change significantly at any time. Caveat emptor.
+
+Usage examples are forthcoming. Some configuration is required for Rails 2, but Rails 3 should work out of the box by just adding Woodhouse
+to your Gemfile.
 
 == Features (current)
 

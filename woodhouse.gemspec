@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "woodhouse"
 
-  s.add_dependency 'fiber18'
+  s.add_dependency 'fiber18', '>= 1.0.1'
   s.add_dependency 'celluloid'
 
   s.add_development_dependency 'rspec', '~> 1.3.1'
