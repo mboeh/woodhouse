@@ -9,6 +9,8 @@ Spec::Rake::SpecTask.new do |t|
 
 end
 
+task :default => :spec
+
 require 'rdoc/task'
 Rake::RDocTask.new(:rdoc) do |t|
   t.main = "README.rdoc"
