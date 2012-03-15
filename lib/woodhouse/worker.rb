@@ -17,7 +17,7 @@ module Woodhouse::Worker
       if @worker_name
         raise ArgumentError, "cannot change worker name"
       else
-        if name
+        if name and !name.empty?
           @worker_name = name.to_sym
           Woodhouse::MixinRegistry.register self
         end

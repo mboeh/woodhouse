@@ -22,6 +22,13 @@ class FakeWorker
 
 end
 
+Woodhouse.configure do |config|
+  config.registry = { :FooBarWorker => FakeWorker }
+  config.runner_type = :dummy
+  config.dispatcher_type = :local
+  config.logger = Logger.new("/dev/null")
+end
+
 shared_examples_for "common" do
 
   let(:empty_layout) {
@@ -55,11 +62,7 @@ shared_examples_for "common" do
   }
 
   let!(:common_config) {
-    Woodhouse::NodeConfiguration.new do |config|
-      config.registry = { :FooBarWorker => FakeWorker }
-      config.runner_type = Woodhouse::Runners::BunnyRunner
-      config.logger = Logger.new("/dev/null")
-    end
+    Woodhouse.global_configuration
   }
 
 end
