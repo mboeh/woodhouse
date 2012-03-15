@@ -1,3 +1,14 @@
+#
+# A Runner implementation that uses hot_bunnies, a JRuby AMQP client using the
+# Java client for RabbitMQ. This class can be loaded if hot_bunnies is not
+# available, but it will fail upon initialization. If you want to use this
+# runner (it's currently the only one that works very well), make sure to
+# add
+#
+#   gem 'hot_bunnies'
+#
+# to your Gemfile. This runner will automatically be used in JRuby.
+#
 class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
   begin
     require 'hot_bunnies'

@@ -1,5 +1,25 @@
 module Woodhouse
 
+  # 
+  # A Layout describes the configuration of a set of Woodhouse Server instances.
+  # Each Server runs all of the workers assigned to a single Node.
+  #
+  # Layouts and their contents (Node and Worker instances) are all plain data,
+  # suitable to being serialized, saved out, passed around, etc.
+  #
+  # Woodhouse clients do not need to know anything about the Layout to dispatch
+  # jobs, but servers rely on the Layout to know which jobs to serve. The basic
+  # process of setting up a Woodhouse server is to create a layout with one or
+  # more nodes and then pass it to Woodhouse::Server to serve.
+  # 
+  # There is a default layout suitable for many applications, available as
+  # Woodhouse::Layout.default. It has a single node named :default, which has
+  # the default node configuration -- one worker for every job. If you do not
+  # need to distribute different sets of jobs to different workers, the default
+  # layout should serve you.
+  # 
+  # TODO: A nicer DSL for creating and tweaking Layouts.
+  #
   class Layout
     include Woodhouse::Util
 
@@ -7,10 +27,22 @@ module Woodhouse
       @nodes = []
     end
 
+    # Returns a frozen list of the nodes assigned to this layout.
     def nodes
       @nodes.frozen? ? @nodes : @nodes.dup.freeze
     end
 
+    # Adds a Node to this layout. If +node+ is a Symbol, a Node will be
+    # automatically created with that name.
+    #
+    #   # Example:
+    #
+    #   layout.add_node Woodhouse::Layout::Node.new(:isis)
+    #
+    #   # Is equivalent to
+    #
+    #   layout.add_node :isis
+    #
     def add_node(node)
       if node.respond_to?(:to_sym)
         node = Woodhouse::Layout::Node.new(node.to_sym)  
@@ -19,6 +51,7 @@ module Woodhouse
       @nodes << node
     end
 
+    # Looks up a Node by name and returns it.
     def node(name)
       name = name.to_sym
       @nodes.detect{|node|
@@ -26,6 +59,11 @@ module Woodhouse
       }
     end
 
+    # Returns a frozen copy of this Layout and all of its child Node and
+    # Worker objects. Woodhouse::Server always takes a frozen copy of the
+    # layout it is given. It is thus safe to modify the same layout
+    # subsequently, and the changes only take effect when the layout is
+    # passed to the server again and Woodhouse::Server#reload is called.
     def frozen_clone
       clone.tap do |cloned|
         cloned.nodes = @nodes.map{|node| node.frozen_clone }.freeze
@@ -33,10 +71,15 @@ module Woodhouse
       end
     end
 
+    # Returns a set of Changes necessary to move from +other_layout+ to this
+    # layout. This is used to permit live reconfiguration of servers by only
+    # spinning up and down nodes/workers which have changed.
     def changes_from(other_layout, node)
       Woodhouse::Layout::Changes.new(self, other_layout, node)
     end
 
+    # The default layout, for convenience purposes. Has one node +:default+,
+    # which has the default configuration (see Woodhouse::Layout::Node#default_configuration!)
     def self.default
       new.tap do |layout|
         layout.add_node :default
@@ -48,6 +91,12 @@ module Woodhouse
 
     attr_writer :nodes
     
+    # 
+    # A Node describes the set of workers present on a single Server.
+    #
+    # More information about Woodhouse's layout system can be found in the
+    # documentation for Woodhouse::Layout.
+    #
     class Node
       include Woodhouse::Util
 
@@ -58,15 +107,21 @@ module Woodhouse
         @workers = []
       end
 
+      # Returns a frozen list of workers assigned to this node.
       def workers
         @workers.frozen? ? @workers : @workers.dup.freeze
       end
-
+      
+      # Adds a Worker to this node.
       def add_worker(worker)
         expect_arg :worker, Woodhouse::Layout::Worker, worker
         @workers << worker
       end
 
+      # Configures this node with one worker per job (jobs obtained 
+      # from Registry#each). The +default_threads+ value of the given
+      # +config+ is used to determine how many threads should be
+      # assigned to each worker.
       def default_configuration!(config)
         config.registry.each do |name, klass|
           klass.public_instance_methods(false).each do |method|
@@ -75,7 +130,8 @@ module Woodhouse
         end
       end
       
-      def frozen_clone
+      # Used by Layout#frozen_clone
+      def frozen_clone # :nodoc:
         clone.tap do |cloned|
           cloned.workers = @workers.map{|worker| worker.frozen_clone }.freeze
           cloned.freeze
@@ -87,6 +143,24 @@ module Woodhouse
       attr_writer :workers
     end
 
+    # 
+    # A Worker describes a single job that is performed on a Server.
+    # One or more Runner actors are created for every Worker in a Node.
+    #
+    # Any Worker has three parameters used to route jobs to it:
+    #
+    # +worker_class_name+:: 
+    #   This is generally a class name. It's looked up
+    #   in a Registry and used to instantiate a job object.
+    # +job_method+:: 
+    #   This is a method on the object called up with +worker_class_name+.
+    # +criteria+:: 
+    #   A hash of values (actually, a QueueCriteria object) used
+    #   to filter only specific jobs to this worker. When a job is dispatched,
+    #   its +arguments+ are compared with a worker's +criteria+. This is
+    #   done via an AMQP headers exchange (TODO: need to have a central document
+    #   to reference on how Woodhouse uses AMQP and jobs are dispatched)
+    #
     class Worker
       attr_reader :worker_class_name, :job_method, :threads, :criteria
 
@@ -139,7 +213,11 @@ module Woodhouse
       end
 
     end
-
+    
+    # 
+    # A diff between two Layouts, used to determine what workers need to be
+    # spun up and down when a layout change is sent to a Server.
+    #
     class Changes
 
       def initialize(new_layout, old_layout, node_name)
