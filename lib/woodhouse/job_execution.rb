@@ -15,7 +15,9 @@ class Woodhouse::JobExecution
     if work_object.respond_to?(:logger=)
       work_object.logger = @config.logger
     end
-    work_object.send(@job.job_method, @job.arguments)
+    @config.runner_middleware.call(@job, work_object) {|job, work_object|
+      work_object.send(job.job_method, job.arguments)
+    }
   end
 
 end

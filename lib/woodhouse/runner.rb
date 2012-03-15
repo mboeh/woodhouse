@@ -5,6 +5,7 @@ class Woodhouse::Runner
   def initialize(worker, config)
     @worker = worker
     @config = config
+    @config.logger.debug "Thread for #{@worker.describe} ready and waiting for jobs"
     subscribe!
   end
 
@@ -23,6 +24,7 @@ class Woodhouse::Runner
   end
 
   def service_job(job)
+    @config.logger.debug "Servicing job for #{@worker.describe}"
     Woodhouse::JobExecution.new(@config, job).execute 
   end
 

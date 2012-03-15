@@ -100,6 +100,10 @@ module Woodhouse
       def exchange_name
         "#{worker_class_name}_#{job_method}".downcase
       end
+      
+      def queue_name
+        exchange_name
+      end
 
       def worker_class_name=(value)
         @worker_class_name = value.to_sym
@@ -119,6 +123,10 @@ module Woodhouse
 
       def frozen_clone
         clone.freeze
+      end
+
+      def describe
+        "#@worker_class_name##@job_method(#{@criteria.describe})"
       end
 
       # TODO: want to recognize increases and decreases in numbers of

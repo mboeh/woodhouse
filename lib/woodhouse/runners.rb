@@ -1,4 +1,12 @@
 module Woodhouse::Runners
+  
+  def self.guess
+    if defined? ::JRUBY_VERSION
+      Woodhouse::Runners::HotBunniesRunner
+    else
+      Woodhouse::Runners::BunnyRunner
+    end
+  end
 
 end
 

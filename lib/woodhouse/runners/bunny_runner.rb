@@ -7,7 +7,7 @@ class Woodhouse::Runners::BunnyRunner < Woodhouse::Runner
     bunny = Bunny.new(@config.server_info)
     bunny.start
     bunny.qos(:prefetch_count => 1)
-    queue = bunny.queue
+    queue = bunny.queue(@worker.queue_name)
     exchange = bunny.exchange(@worker.exchange_name, :type => :headers)
     queue.bind(exchange, :arguments => @worker.criteria.amqp_headers)
     while not @stopped

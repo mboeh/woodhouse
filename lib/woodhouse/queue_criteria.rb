@@ -16,6 +16,10 @@ module Woodhouse
       @criteria == other.criteria
     end
 
+    def describe
+      @criteria.inspect
+    end
+
     def amqp_headers
       # TODO: needs to be smarter
       @criteria ? @criteria.merge('x-match' => 'all') : {}

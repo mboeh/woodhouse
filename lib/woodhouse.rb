@@ -33,20 +33,22 @@ module Woodhouse
       @global_configuration ||= Woodhouse::NodeConfiguration.default
     end
 
-    def configure(&blk)
-      @global_configuration = Woodhouse::NodeConfiguration.new(&blk)
+    def configure
+      @global_configuration ||= Woodhouse::NodeConfiguration.default
+      yield @global_configuration
     end
   
     def global_layout
       @global_layout ||= Woodhouse::Layout.default
     end
 
-    def layout(&blk)
-      @global_layout = Woodhouse::Layout.new.tap(&blk)
+    def layout
+      @global_layout ||= Woodhouse::Layout.new
+      yield @global_layout
     end
 
     def dispatch(*a)
-      global_configuration.make_dispatcher.dispatch(*a)
+      global_configuration.dispatcher.dispatch(*a)
     end
 
   end
@@ -67,3 +69,6 @@ require 'woodhouse/worker'
 require 'woodhouse/job_execution'
 require 'woodhouse/runners'
 require 'woodhouse/dispatchers'
+require 'woodhouse/middleware_stack'
+require 'woodhouse/middleware'
+require 'woodhouse/rails'

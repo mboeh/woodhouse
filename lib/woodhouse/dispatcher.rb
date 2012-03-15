@@ -9,7 +9,15 @@ class Woodhouse::Dispatcher
   end
 
   def dispatch_job(job)
-    raise NotImplementedError, "implement #dispatch_job in a subclass of Woodhouse::Dispatcher"
+    @config.dispatcher_middleware.call(job) {|job|
+      deliver_job(job)
+    }
+  end
+
+  private
+
+  def deliver_job(job)
+    raise NotImplementedError, "implement #deliver_job in a subclass of Woodhouse::Dispatcher"
   end
 
 end

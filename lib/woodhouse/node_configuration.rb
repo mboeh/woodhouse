@@ -2,21 +2,24 @@ class Woodhouse::NodeConfiguration
   include Woodhouse::Util
 
   attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threads
+  attr_accessor :dispatcher_middleware, :runner_middleware
 
   def initialize
-    self.default_threads ||= 1
+    self.default_threads = 1
+    self.dispatcher_middleware = Woodhouse::MiddlewareStack.new(self)
+    self.runner_middleware = Woodhouse::MiddlewareStack.new(self)
     yield self if block_given?
   end
 
-  # TODO: don't like this.
-  def make_dispatcher
-    dispatcher.new(self)
+  def dispatcher
+    @dispatcher ||= dispatcher_type.new(self)
   end
 
   def dispatcher_type=(value)
     if value.respond_to?(:to_sym)
       value = lookup_key(value, :Dispatcher)
     end
+    @dispatcher = nil
     @dispatcher_type = value
   end
 
@@ -24,6 +27,7 @@ class Woodhouse::NodeConfiguration
     if value.respond_to?(:to_sym)
       value = lookup_key(value, :Runner)
     end
+    @dispatcher = nil
     @runner_type = value
   end
 
@@ -42,9 +46,12 @@ class Woodhouse::NodeConfiguration
     new do |config|
       config.registry         = Woodhouse::MixinRegistry.new
       config.server_info      = nil
-      config.runner_type      = :bunny
+      config.runner_type      = Woodhouse::Runners.guess
       config.dispatcher_type  = :local
       config.logger           = Logger.new("/dev/null") 
+      config.dispatcher_middleware << Woodhouse::Middleware::LogDispatch
+      config.runner_middleware     << Woodhouse::Middleware::LogJobs
+      config.runner_middleware     << Woodhouse::Middleware::AssignLogger
     end
   end
 

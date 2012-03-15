@@ -1,6 +1,8 @@
 class Woodhouse::Dispatchers::LocalDispatcher < Woodhouse::Dispatcher
 
-  def dispatch_job(job)
+  private
+
+  def deliver_job(job)
     Woodhouse::JobExecution.new(@config, job).execute 
   end
 

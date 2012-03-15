@@ -58,6 +58,7 @@ shared_examples_for "common" do
     Woodhouse::NodeConfiguration.new do |config|
       config.registry = { :FooBarWorker => FakeWorker }
       config.runner_type = Woodhouse::Runners::BunnyRunner
+      config.logger = Logger.new("/dev/null")
     end
   }
 

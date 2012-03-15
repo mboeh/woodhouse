@@ -23,7 +23,8 @@ class Woodhouse::Scheduler
 
     def spin_down
       @spinning_down = true
-      @threads.each do |thread|
+      @threads.each_with_index do |thread, idx|
+        @config.logger.debug "Spinning down thread #{idx} for worker #{@worker_def.describe}"
         thread.spin_down
       end
       @scheduler.remove_worker(@worker_def)
@@ -37,7 +38,8 @@ class Woodhouse::Scheduler
     private
 
     def spin_up
-      @worker_def.threads.times do
+      @worker_def.threads.times do |idx|
+        @config.logger.debug "Spinning up thread #{idx} for worker #{@worker_def.describe}"
         @threads << @config.runner_type.new_link(@worker_def, @config)
       end
     end
@@ -50,11 +52,13 @@ class Woodhouse::Scheduler
   end
 
   def start_worker(worker)
+    @config.logger.debug "Starting worker #{worker.describe}"
     @worker_sets[worker] = WorkerSet.new_link(Celluloid.current_actor, worker, @config) unless @worker_sets.has_key?(worker)
   end
 
   def stop_worker(worker, wait = false)
     if set = @worker_sets[worker]
+      @config.logger.debug "Spinning down worker #{worker.describe}"
       set.spin_down!
       set.wait_until_done if wait
     end
@@ -66,12 +70,15 @@ class Woodhouse::Scheduler
 
   def spin_down
     @spinning_down = true
+    @config.logger.debug "Spinning down all workers"
     @worker_sets.each do |worker, set|
       set.spin_down!
     end
     @worker_sets.keys.each do |worker|
       set = @worker_sets[worker]
-      set.wait_until_done
+      if set
+        set.wait_until_done
+      end
     end
   end
 
