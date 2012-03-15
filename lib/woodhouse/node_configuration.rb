@@ -8,6 +8,7 @@ class Woodhouse::NodeConfiguration
     self.default_threads = 1
     self.dispatcher_middleware = Woodhouse::MiddlewareStack.new(self)
     self.runner_middleware = Woodhouse::MiddlewareStack.new(self)
+    self.server_info = {}
     yield self if block_given?
   end
 
@@ -31,6 +32,10 @@ class Woodhouse::NodeConfiguration
     @runner_type = value
   end
 
+  def server_info=(hash)
+    @server_info = hash ? symbolize_keys(hash) : {}
+  end
+
   private
 
   def lookup_key(key, namespace)
@@ -39,6 +44,13 @@ class Woodhouse::NodeConfiguration
       raise NameError, "couldn't find Woodhouse::#{namespace}s::#{camelize(key.to_s)}#{namespace} (from #{key})"
     end
     const
+  end
+
+  def symbolize_keys(hash)
+    hash.inject({}){|h,(k,v)|
+      h[k.to_sym] = v
+      h
+    }
   end
 
   # TODO: detect defaults based on platform

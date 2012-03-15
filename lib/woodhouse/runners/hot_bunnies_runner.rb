@@ -19,7 +19,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
   end
 
   def subscribe
-    client = HotBunnies.connect(@config.server_info || {})
+    client = HotBunnies.connect(@config.server_info)
     channel = client.create_channel
     channel.prefetch = 1
     queue = channel.queue(@worker.queue_name)
