@@ -35,6 +35,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
             headers.reject
           end
         else
+          @config.logger.error("Cannot service job #{job.describe} in queue for #{@worker.describe}")
           headers.reject
         end
       rescue => err
@@ -58,7 +59,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
     Woodhouse::Job.new(@worker.worker_class_name, @worker.job_method) do |job|
       begin
         job.arguments = headers.properties.headers.inject({}) {|h,(k,v)|
-          h[k.to_sym] = v.to_s
+          h[k.to_s] = v.to_s
           h
         }
       rescue => err

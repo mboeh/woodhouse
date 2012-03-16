@@ -14,7 +14,7 @@ class Woodhouse::Job
 
   def arguments=(h)
     @arguments = (h || {}).inject({}){|args,(k,v)|
-      args[k.to_sym] = v.to_s
+      args[k.to_s] = v.to_s
       args
     }
   end
