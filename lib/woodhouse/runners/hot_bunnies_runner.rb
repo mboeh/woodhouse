@@ -29,8 +29,11 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
       begin
         job = make_job(headers)
         if can_service_job?(job)
-          service_job(job)
-          headers.ack
+          if service_job(job)
+            headers.ack
+          else
+            headers.reject
+          end
         else
           headers.reject
         end

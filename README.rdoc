@@ -28,6 +28,13 @@ to your Gemfile.
 * Watchdog/status workers on every node
 * Web interface
 
+== To Do
+
+* Examples and guides
+* More documentation
+* Finish Rails 3 support -- it's there but hasn't been fully tested
+* Watchdog system
+
 == Acknowledgements
 
 Woodhouse originated in a substantially modified version of the Workling background worker system, and still retains some code
