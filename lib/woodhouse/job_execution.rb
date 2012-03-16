@@ -19,7 +19,7 @@ class Woodhouse::JobExecution
     work_object = worker.new
     begin
       @config.runner_middleware.call(@job, work_object) {|job, work_object|
-        work_object.send(job.job_method, job.arguments)
+        work_object.send(job.job_method, symbolize_keys(job.arguments))
       }
       return true
     rescue => err
@@ -28,4 +28,14 @@ class Woodhouse::JobExecution
     end
   end
 
+  private
+
+  # TODO: lots of similar methods scattered around. Should refactor.
+  def symbolize_keys(hash)
+    hash.inject({}) {|h,(k,v)|
+      h[k.to_sym] = v
+      h
+    }
+  end
+      
 end
