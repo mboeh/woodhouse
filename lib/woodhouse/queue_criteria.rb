@@ -36,7 +36,7 @@ module Woodhouse
 
     def stringify_values(hash)
       hash.inject({}) {|h,(k,v)|
-        h[k.to_sym] = v.to_s
+        h[k.to_s] = v.to_s
         h
       }
     end
