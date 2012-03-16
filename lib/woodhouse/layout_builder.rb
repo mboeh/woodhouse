@@ -17,10 +17,12 @@ class Woodhouse::LayoutBuilder
       if job_method.kind_of?(Hash)
         # Two-argument invocation
         opts = job_method
+        job_method = nil
         methods = @config.registry[class_name].public_instance_methods(false)
       else
         methods = [job_method]
       end
+      remove(class_name, job_method, opts.empty? ? nil : opts)
       methods.each do |method|
         @node.add_worker Woodhouse::Layout::Worker.new(class_name, method, opts)
       end
@@ -30,7 +32,7 @@ class Woodhouse::LayoutBuilder
       @node.workers.select{|worker|
         worker.worker_class_name == class_name &&
           (job_method.nil? || worker.job_method == job_method) &&
-          (opts.nil? || worker.criteria.matches?(opts))
+          (opts.nil? || worker.criteria.criteria == opts[:only])
       }.each do |worker|
         @node.remove_worker(worker)
       end

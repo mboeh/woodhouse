@@ -44,7 +44,7 @@ module Woodhouse
 
     def layout
       @global_layout ||= Woodhouse::Layout.new
-      yield @global_layout
+      yield Woodhouse::LayoutBuilder.new(@global_layout)
     end
 
     def dispatch(*a)

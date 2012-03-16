@@ -25,6 +25,8 @@ describe Woodhouse::LayoutBuilder do
       end
       layout.node(:odin) do |odin|
         # Two workers.
+        odin.add :Lana, :threads => 2
+        # Still two workers
         odin.add :Lana, :threads => 5
       end
     end

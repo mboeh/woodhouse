@@ -15,7 +15,6 @@ describe Woodhouse::Worker do
       subject.async_fake_job
     end.should_not raise_error(NoMethodError)
     lambda do
-      p "."
       subject.async_something_else
     end.should raise_error(NoMethodError)
     lambda do
