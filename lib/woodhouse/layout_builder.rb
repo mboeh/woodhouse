@@ -44,7 +44,7 @@ class Woodhouse::LayoutBuilder
     @config = config
     @layout = layout || Woodhouse::Layout.new
     @nodes ||= {}
-    yield self
+    yield self if block_given?
   end
 
   def node(name)
