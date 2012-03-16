@@ -8,7 +8,7 @@ module Woodhouse
         opts = opts.criteria
       end
       unless opts.nil?
-        @criteria = opts.frozen? ? opts : opts.dup.freeze
+        @criteria = stringify_values(opts).freeze
       end
     end
 
@@ -28,8 +28,17 @@ module Woodhouse
     def matches?(args)
       return true if @criteria.nil?
       @criteria.all? do |key, val|
-        args[key] == val.to_s
+        args[key] == val
       end
+    end
+
+    private
+
+    def stringify_values(hash)
+      hash.inject({}) {|h,(k,v)|
+        h[k.to_sym] = v.to_s
+        h
+      }
     end
 
   end
