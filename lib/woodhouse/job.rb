@@ -5,7 +5,7 @@ class Woodhouse::Job
     self.worker_class_name = class_name
     self.job_method = method
     self.arguments = args
-    yield self
+    yield self if block_given?
   end
 
   def job_method=(value)
