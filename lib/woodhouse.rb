@@ -15,7 +15,6 @@ module Woodhouse
     end
 
     def expect_arg_or_nil(name, klass, value)
-      m
       expect_arg(name, klass, value) unless value.nil?
     end
   

@@ -118,14 +118,24 @@ module Woodhouse
         @workers << worker
       end
 
+      def remove_worker(worker)
+        expect_arg :worker, Woodhouse::Layout::Worker, worker
+        @workers.delete(worker)
+      end
+
+      def clear
+        @workers.clear
+      end
+
       # Configures this node with one worker per job (jobs obtained 
       # from Registry#each). The +default_threads+ value of the given
       # +config+ is used to determine how many threads should be
       # assigned to each worker.
-      def default_configuration!(config)
+      def default_configuration!(config, options = {})
+        options[:threads] ||= config.default_threads
         config.registry.each do |name, klass|
           klass.public_instance_methods(false).each do |method|
-            add_worker Woodhouse::Layout::Worker.new(name, method, :threads => config.default_threads)
+            add_worker Woodhouse::Layout::Worker.new(name, method, options)
           end
         end
       end
@@ -167,8 +177,11 @@ module Woodhouse
       def initialize(worker_class_name, job_method, opts = {})
         self.worker_class_name = worker_class_name
         self.job_method = job_method
-        self.threads = opts.fetch(:threads, 1)
-        self.criteria = opts[:only]
+        self.threads = opts.delete(:threads) || 1
+        self.criteria = opts.delete(:only)
+        unless opts.keys.empty? 
+          raise ArgumentError, "unknown option keys: #{opts.keys.inspect}"
+        end
       end
       
       def exchange_name
