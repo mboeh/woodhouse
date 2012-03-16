@@ -21,8 +21,8 @@ class Woodhouse::Process
       sleep
     rescue Interrupt
       puts "Shutting down."
-      server.shutdown!
-      server.wait(:shutdown)
+      @server.shutdown!
+      @server.wait(:shutdown)
     end
   end
 
