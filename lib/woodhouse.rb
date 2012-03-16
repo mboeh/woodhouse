@@ -15,6 +15,7 @@ module Woodhouse
     end
 
     def expect_arg_or_nil(name, klass, value)
+      m
       expect_arg(name, klass, value) unless value.nil?
     end
   
@@ -59,6 +60,7 @@ require 'fiber18'
 require 'celluloid'
 require 'woodhouse/job'
 require 'woodhouse/layout'
+require 'woodhouse/layout_builder'
 require 'woodhouse/scheduler'
 require 'woodhouse/server'
 require 'woodhouse/queue_criteria'
