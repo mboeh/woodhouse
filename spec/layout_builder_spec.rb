@@ -44,7 +44,7 @@ describe Woodhouse::LayoutBuilder do
       wk.worker_class_name == :Ray && wk.criteria.criteria
     }
     ray.should_not be_nil
-    ray.criteria.matches?(:baz => "bat").should be_true
+    ray.criteria.matches?("baz" => "bat").should be_true
     odin = layout.node(:odin)
     odin.workers.should have(2).workers
     odin.workers.first.threads.should == 5
