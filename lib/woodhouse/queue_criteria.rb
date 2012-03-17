@@ -25,6 +25,12 @@ module Woodhouse
       @criteria ? @criteria.merge('x-match' => 'all') : {}
     end
 
+    def queue_key
+      @criteria ? @criteria.map{|k,v|
+        "#{k.downcase}_#{v.downcase}"
+      }.join("_") : ""
+    end
+
     def matches?(args)
       return true if @criteria.nil?
       @criteria.all? do |key, val|

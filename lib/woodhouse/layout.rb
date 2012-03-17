@@ -189,7 +189,7 @@ module Woodhouse
       end
       
       def queue_name
-        exchange_name
+        exchange_name + criteria.queue_key
       end
 
       def worker_class_name=(value)
