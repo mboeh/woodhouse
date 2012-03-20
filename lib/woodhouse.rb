@@ -25,9 +25,9 @@ module Woodhouse
 
   end
 
-  # TODO: hate keeping global state in this model. I need to push
+  # TODO: hate keeping global state in this class. I need to push
   # some of this down into NodeConfiguration or something like it.
-  class << self
+  module GlobalMethods 
 
     def global_configuration
       @global_configuration ||= Woodhouse::NodeConfiguration.default
@@ -52,6 +52,8 @@ module Woodhouse
     end
 
   end
+
+  extend GlobalMethods
 
 end
 
