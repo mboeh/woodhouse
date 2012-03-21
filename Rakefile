@@ -18,7 +18,7 @@ namespace :spec do
 end
 
 # Full server specs are supported on Ruby 1.9 or JRuby.
-if RUBY_VERSION.to_f >= 1.9 or defined?(JRUBY_VERSION)
+if RUBY_VERSION.to_f >= 1.9 or %w[jruby rbx].include?(RUBY_ENGINE)
   task :spec => "spec:server"
 else
   task :spec => "spec:client"

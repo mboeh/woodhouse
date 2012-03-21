@@ -175,6 +175,7 @@ module Woodhouse
       attr_reader :worker_class_name, :job_method, :threads, :criteria
 
       def initialize(worker_class_name, job_method, opts = {})
+        opts = opts.clone
         self.worker_class_name = worker_class_name
         self.job_method = job_method
         self.threads = opts.delete(:threads) || 1
