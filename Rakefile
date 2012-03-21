@@ -26,7 +26,7 @@ end
 
 task :default => :spec
 
-if RUBY_VERSION.to_f >= 1.9
+if ENV['RDOC']
   require 'rdoc/task'
   Rake::RDocTask.new(:rdoc) do |t|
     t.main = "README.rdoc"

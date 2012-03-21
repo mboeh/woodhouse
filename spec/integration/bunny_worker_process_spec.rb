@@ -5,6 +5,7 @@ describe Woodhouse::Runners::BunnyRunner do
   it_should_behave_like "common"
 
   let(:scheduler) {
+    common_config.runner_type = :bunny
     Woodhouse::Scheduler.new(common_config)
   }
 

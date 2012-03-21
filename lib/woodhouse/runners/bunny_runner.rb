@@ -13,7 +13,7 @@ class Woodhouse::Runners::BunnyRunner < Woodhouse::Runner
     while not @stopped
       message = queue.pop(:ack => true)
       if message[:header].nil?
-        sleep 0.5
+        sleep 0.01 
       else
         job = make_job(message)
         if can_service_job?(job)
