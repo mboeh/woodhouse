@@ -15,7 +15,6 @@ describe Woodhouse::LayoutBuilder do
     builder = Woodhouse::LayoutBuilder.new(common_config) do |layout|
       layout.node(:default) do |default|
         # Eight workers...
-        p [:all]
         default.all_workers :threads => 2
         # Six workers...
         default.remove :Cyril

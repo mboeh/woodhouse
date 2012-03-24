@@ -1,11 +1,19 @@
 class Woodhouse::Job
   attr_accessor :worker_class_name, :job_method, :arguments
+  attr_accessor :watchdog
 
   def initialize(class_name = nil, method = nil, args = nil)
     self.worker_class_name = class_name
     self.job_method = method
     self.arguments = args
     yield self if block_given?
+  end
+
+  def to_hash
+    {
+      "worker_class_name" => worker_class_name,
+      "job_method"        => job_method,
+    }.merge(arguments)
   end
 
   def job_method=(value)
