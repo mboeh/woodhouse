@@ -20,9 +20,8 @@ describe Woodhouse::Scheduler do
   end
 
   it "should not create a new worker set when an existing worker is sent to #start_worker" do
-    pending "figure out how to test this without mocha, which works badly with Celluloid"
-    subject.start_worker worker
-    subject.start_worker worker
+    subject.start_worker(worker).should be_true
+    subject.start_worker(worker).should be_false
   end
 
   it "should spin down and remove a worker set when a worker is sent to #stop_worker" do

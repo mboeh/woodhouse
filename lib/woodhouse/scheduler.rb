@@ -53,7 +53,12 @@ class Woodhouse::Scheduler
 
   def start_worker(worker)
     @config.logger.debug "Starting worker #{worker.describe}"
-    @worker_sets[worker] = WorkerSet.new_link(Celluloid.current_actor, worker, @config) unless @worker_sets.has_key?(worker)
+    unless @worker_sets.has_key?(worker)
+      @worker_sets[worker] = WorkerSet.new_link(Celluloid.current_actor, worker, @config)
+      true
+    else
+      false
+    end
   end
 
   def stop_worker(worker, wait = false)
