@@ -47,6 +47,11 @@ module Woodhouse
       yield Woodhouse::LayoutBuilder.new(Woodhouse.global_configuration, @global_layout)
     end
 
+    # Returns +true+ on JRuby, Rubinius, or MRI 1.9. +false+ otherwise.
+    def threading_safe?
+      RUBY_VERSION.to_f >= 1.9 or %w[jruby rbx].include?(RUBY_ENGINE)
+    end
+
     def dispatch(*a)
       global_configuration.dispatcher.dispatch(*a)
     end
