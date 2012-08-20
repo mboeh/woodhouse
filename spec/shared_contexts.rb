@@ -7,6 +7,8 @@ class FakeWorker
     attr_accessor :jobs
   end
 
+  self.jobs ||= []
+
   def initialize
     FakeWorker.last_worker = self
     FakeWorker.jobs ||= []

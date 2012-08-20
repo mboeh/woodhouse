@@ -24,7 +24,7 @@ describe Woodhouse::Runners::BunnyRunner do
     exchange.publish("hi", :headers => { :orz => "*silly cows*" })
     bunny.stop
     sleep 0.2
-    FakeWorker.jobs.should have(1).job
+    FakeWorker.jobs.should_not be_empty
     FakeWorker.jobs.last[:orz].should == "*happy campers*"
     scheduler.spin_down
   end

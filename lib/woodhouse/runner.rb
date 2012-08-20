@@ -50,7 +50,7 @@ class Woodhouse::Runner
   
   # Returns +true+ if the Job's arguments match this worker's QueueCriteria, else +false+.
   def can_service_job?(job) # :doc:
-    @worker.criteria.matches?(job.arguments)
+    @worker.accepts_job?(job)
   end
 
   # Executes a Job. See Woodhouse::JobExecution.

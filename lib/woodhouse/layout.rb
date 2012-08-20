@@ -123,6 +123,12 @@ module Woodhouse
         @workers.delete(worker)
       end
 
+      def worker_for_job(job)
+        @workers.detect {|worker|
+          worker.accepts_job?(job)
+        }
+      end
+
       def clear
         @workers.clear
       end
@@ -215,6 +221,10 @@ module Woodhouse
 
       def describe
         "#@worker_class_name##@job_method(#{@criteria.describe})"
+      end
+
+      def accepts_job?(job)
+        criteria.matches?(job.arguments)
       end
 
       # TODO: want to recognize increases and decreases in numbers of
