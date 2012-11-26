@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/environment'
+
+logg = Logger.new(File.dirname(__FILE__) + "/../log/woodhouse.log")
+logg.level = Logger::DEBUG
+Woodhouse.global_configuration.logger = logg
+Celluloid.logger = logg
+
+Woodhouse::Process.new.execute
