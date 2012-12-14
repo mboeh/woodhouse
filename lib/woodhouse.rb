@@ -56,6 +56,10 @@ module Woodhouse
       global_configuration.dispatcher.dispatch(*a)
     end
 
+    def dispatch_job(job)
+      global_configuration.dispatcher.dispatch_job(job)
+    end
+
   end
 
   extend GlobalMethods

@@ -1,0 +1,33 @@
+# Poovey, a Just Simple Enough local and remote messaging service5:
+
+# Make sure a Poovey::Exchange is floating around
+
+exchange = Poovey.start
+
+# Tell the exchange to toss all messages not handled locally upstream
+
+# "*" is shorthand for Poovey["*"] is shorthand for Poovey::MessageCriteria.new("*")
+
+exchange.route "*", Poovey::Upstream::AMQPHeaderExchange.new(host: "...")
+exchange.route "dummy", lambda{|message|
+  p [message.name, message.parameters["hooray"], message.payload]
+}
+exchange.route Poovey["dummy", "hooray" => "no"], lambda{|message|
+  puts "no hooray"
+}
+
+# Now there's two Celluloid workers going:
+#   Poovey.local_exchange
+#   and that Poovey::Upstream::AMQPHeaderExchange instance
+
+Poovey.deliver "dummy", "hooray" => "yes"
+
+# prints ["dummy", "yes", nil]
+
+Poovey.deliver "dummy", "hooray" => "no"
+
+# prints "no hooray"
+
+Poovey.deliver "elsewhere"
+
+# goes upstream

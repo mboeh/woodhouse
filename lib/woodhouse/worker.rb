@@ -68,11 +68,15 @@ module Woodhouse::Worker
       end
     end
 
+    def job(method, params = {})
+      Woodhouse::Job.new(@worker_name, method, params)
+    end
+
     # You can dispatch a job +baz+ on class +FooBar+ by calling FooBar.async_baz.
     def method_missing(method, *args, &block)
       if method.to_s =~ /^asynch?_(.*)/
         if instance_methods(false).detect{|meth| meth.to_s == $1 }
-          Woodhouse.dispatch(@worker_name, $1, args.first)
+          Woodhouse.dispatch_job job($1, args.first)
         else
           super
         end

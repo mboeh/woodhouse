@@ -32,8 +32,11 @@ to your Gemfile.
 
 * Examples and guides
 * More documentation
-* Finish Rails 3 support -- it's there but hasn't been fully tested
 * Watchdog system
+* Finish extracting Poovey
+* Cleaner approach to local dispatch
+* Rip out config object
+* Replace middleware stacks
 
 == Acknowledgements
 

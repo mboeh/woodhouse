@@ -9,6 +9,14 @@ class Woodhouse::Job
     yield self if block_given?
   end
 
+  def self.from_poovey_message(message)
+    new(*message.name.gsub(/^Woodhouse:/, '').split("#", 2), message.parameters)
+  end
+
+  def to_poovey_message
+    Poovey::Message.new("Woodhouse:#{worker_class_name}##{job_method}", arguments)
+  end
+
   def to_hash
     {
       "worker_class_name" => worker_class_name,
