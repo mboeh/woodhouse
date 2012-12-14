@@ -19,7 +19,7 @@ if defined?(Rails::Railtie)
   Woodhouse.extend Woodhouse::RailsExtensions
  
   class Woodhouse::Rails < Rails::Engine
-    config.autoload_paths << Rails.root.join("app/workers")
+    config.autoload_paths << "app/workers"
 
     initializer 'woodhouse' do
       config_paths = %w[woodhouse.yml workling.yml].map{|file|

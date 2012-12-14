@@ -68,6 +68,7 @@ end
 
 require 'fiber18'
 require 'celluloid'
+require 'poovey' 
 require 'woodhouse/job'
 require 'woodhouse/layout'
 require 'woodhouse/layout_builder'

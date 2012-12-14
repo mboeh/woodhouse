@@ -1,3 +1,3 @@
-class Woodhouse::Dispatchers::LocalAsyncDispatcher < Woodhouse::LocalDispatcher
+class Woodhouse::Dispatchers::LocalAsyncDispatcher < Woodhouse::Dispatchers::LocalDispatcher
   include Celluloid
 end
