@@ -1,6 +1,5 @@
 class Woodhouse::Job
   attr_accessor :worker_class_name, :job_method, :arguments
-  attr_accessor :watchdog
 
   def initialize(class_name = nil, method = nil, args = nil)
     self.worker_class_name = class_name

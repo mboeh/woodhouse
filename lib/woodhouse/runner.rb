@@ -27,7 +27,6 @@ class Woodhouse::Runner
   def initialize(worker, config)
     @worker = worker
     @config = config
-    @watchdog = Woodhouse::Watchdog.register(Celluloid.current_actor)
     @config.logger.debug "Thread for #{@worker.describe} ready and waiting for jobs"
     subscribe!
   end
@@ -56,9 +55,7 @@ class Woodhouse::Runner
   # Executes a Job. See Woodhouse::JobExecution.
   def service_job(job) # :doc:
     @config.logger.debug "Servicing job for #{@worker.describe}"
-    @watchdog.watch(job) do |job|
-      Woodhouse::JobExecution.new(@config, job).execute
-    end
+    Woodhouse::JobExecution.new(@config, job).execute
   end
 
 end
