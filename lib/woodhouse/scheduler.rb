@@ -87,9 +87,8 @@ class Woodhouse::Scheduler
     end
   end
 
-  protected
-
   def remove_worker(worker)
     @worker_sets.delete(worker)
   end
+
 end
