@@ -1,0 +1,5 @@
+# Progress Notifications
+
+* Jobs have a _progress_id added to the arguments
+* A direct exchange 'woodhouse.jobs' is created
+* This _progress_id is used as the routing key

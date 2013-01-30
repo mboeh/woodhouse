@@ -19,7 +19,7 @@ class Woodhouse::JobExecution
     work_object = worker.new
     begin
       @config.runner_middleware.call(@job, work_object) {|job, work_object|
-        work_object.send(job.job_method, symbolize_keys(job.arguments))
+        work_object.send(job.job_method, job)
       }
       return true
     rescue => err

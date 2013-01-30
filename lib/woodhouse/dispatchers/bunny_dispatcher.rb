@@ -11,11 +11,23 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   private
 
   def deliver_job(job)
-    @mutex.synchronize do
-      @bunny.start
+    run do
       exchange = @bunny.exchange(job.exchange_name, :type => :headers)
       exchange.publish(" ", :headers => job.arguments)
-      @bunny.stop
+    end
+  end
+
+  def deliver_job_update(job, data)
+    run do
+      exchange = @bunny.exchange("woodhouse.progress", :type => :direct)
+      exchange.publish(data.to_json, :routing_key => job.job_id)
+    end
+  end
+
+  def run
+    @mutex.synchronize do
+      @bunny.start unless @bunny.connected?
+      yield
     end
   end
 
