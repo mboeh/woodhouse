@@ -19,7 +19,7 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
 
   def deliver_job_update(job, data)
     run do
-      exchange = @bunny.exchange("woodhouse.progress", :type => :direct)
+      exchange = @bunny.direct("woodhouse.progress")
       exchange.publish(data.to_json, :routing_key => job.job_id)
     end
   end

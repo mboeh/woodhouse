@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'mocha'
-  s.add_development_dependency 'bunny'
+  s.add_development_dependency 'bunny', "~> 0.9.0.pre4"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

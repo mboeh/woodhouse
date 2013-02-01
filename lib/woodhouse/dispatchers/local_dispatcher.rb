@@ -7,7 +7,7 @@ class Woodhouse::Dispatchers::LocalDispatcher < Woodhouse::Dispatcher
   end
 
   def deliver_job_update(job, data)
-    
+    @config.logger.info "[Woodhouse job update] #{job.job_id} -- #{data.inspect}"
   end
 
 end
