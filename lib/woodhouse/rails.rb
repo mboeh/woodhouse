@@ -34,7 +34,7 @@ if defined?(Rails::Railtie)
       # Set up reasonable defaults
       Woodhouse.configure do |config|
         config.logger = ::Rails.logger
-        if ::Rails.env =~ /development|test/
+        if ::Rails.env =~ /^(development|test)$/
           config.dispatcher_type = :local
         else
           config.dispatcher_type = :bunny
