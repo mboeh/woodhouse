@@ -25,12 +25,12 @@ describe Woodhouse::Progress do
       ticker.to_hash.should == { "orz" => { "top" => 100, "current" => 10, "status" => "working" } }
     end
 
-    context "#tick!" do
+    context "#tick" do
       
       it "should send progress updates" do
         ticker = job.status_ticker("orz")
         sink.should_receive(:update_job).with(job, { "orz" => { "status" => "funky", "current" => 1 } })
-        ticker.tick! :status => "funky"
+        ticker.tick :status => "funky"
       end
 
     end
