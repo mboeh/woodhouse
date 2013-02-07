@@ -64,7 +64,11 @@ module Woodhouse::Progress
         exchange = channel.direct("woodhouse.progress")
         queue = channel.queue(job_id, :durable => true)
         queue.bind(exchange, :routing_key => job_id)
-        _, _, payload = queue.pop
+        payload = nil
+        queue.message_count.times do
+          _, _, next_payload = queue.pop
+          payload = next_payload if next_payload
+        end
         payload
       ensure
         bunny.stop
