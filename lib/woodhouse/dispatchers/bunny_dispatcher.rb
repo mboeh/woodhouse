@@ -20,6 +20,8 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   def deliver_job_update(job, data)
     run do
       exchange = @bunny.direct("woodhouse.progress")
+      # establish durable queue to pick up updates
+      @bunny.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
       exchange.publish(data.to_json, :routing_key => job.job_id)
     end
   end
