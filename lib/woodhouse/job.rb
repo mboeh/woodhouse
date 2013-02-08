@@ -3,6 +3,9 @@ require 'forwardable'
 
 class Woodhouse::Job
   attr_accessor :worker_class_name, :job_method, :arguments
+  extend Forwardable
+
+  def_delegators :arguments, :each
 
   def initialize(class_name = nil, method = nil, args = nil)
     self.worker_class_name = class_name
