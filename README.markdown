@@ -1,6 +1,6 @@
 # Woodhouse
 
-[<img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status" />][http://travis-ci.org/mboeh/woodhouse]
+[<img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status" />](http://travis-ci.org/mboeh/woodhouse)
 
 An AMQP-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.
 
@@ -54,4 +54,4 @@ to your Gemfile.
 Woodhouse originated in a substantially modified version of the Workling background worker system, and still retains some code
 and structure from that project.
 
-This library was developed for [CrowdCompass][http://crowdcompass.com] and was released as open source with their permission.
+This library was developed for [CrowdCompass](http://crowdcompass.com) and was released as open source with their permission.
