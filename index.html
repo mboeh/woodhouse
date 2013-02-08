@@ -32,26 +32,30 @@
       <section>
         <h1>Woodhouse</h1>
 
-<p>An AMQP-based background worker system for Ruby 1.8 and 1.9 designed to make managing heterogenous tasks relatively easy.</p>
+<p><a href="http://travis-ci.org/mboeh/woodhouse"><img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status"></a></p>
+
+<p>An AMQP-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.</p>
 
 <p>The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly
 in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary
 goal is to provide a sane way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.</p>
 
-<h2>Usage</h2>
+<p>Woodhouse 0.0.x is production-ready for Rails 2 and Ruby 1.8, while 0.1.x is in active development for Ruby 1.9.</p>
 
-<p>Woodhouse is currently being developed. It is not production-ready, and is liable to change significantly at any time. Caveat emptor.</p>
+<h2>Usage</h2>
 
 <p>Usage examples are forthcoming. Some configuration is required for Rails 2, but Rails 3 should work out of the box by just adding Woodhouse
 to your Gemfile.</p>
 
-<h2>Features (current)</h2>
+<h2>Features</h2>
 
 <ul>
 <li>Configurable worker sets per server</li>
 <li>Configurable number of threads per worker</li>
 <li>Segmenting a single queue among multiple workers based on job characteristics (using AMQP header exchanges)</li>
-</ul><h2>Features (planned)</h2>
+<li>Progress reporting on jobs</li>
+<li>Job dispatch and execution middleware stacks</li>
+</ul><h2>Upcoming</h2>
 
 <ul>
 <li>Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting</li>
@@ -64,7 +68,20 @@ to your Gemfile.</p>
 <li>Examples and guides</li>
 <li>More documentation</li>
 <li>Watchdog system</li>
-</ul><h2>Acknowledgements</h2>
+</ul><h2>Supported Versions</h2>
+
+<h3>woodhouse 0.1.x</h3>
+
+<ul>
+<li>bunny 0.9.x, RabbitMQ 2.x or later</li>
+<li>ruby 1.9</li>
+<li>MRI, JRuby, Rubinius 2</li>
+</ul><h3>woodhouse 0.0.x</h3>
+
+<ul>
+<li>ruby 1.8</li>
+<li>MRI, JRuby, Rubinius</li>
+</ul><h3>Acknowledgements</h3>
 
 <p>Woodhouse originated in a substantially modified version of the Workling background worker system, and still retains some code
 and structure from that project.</p>
