@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Woodhouse by mboeh</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Woodhouse</h1>
+        <p class="header">An AMQP-based background worker system for Ruby.</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/mboeh/woodhouse/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/mboeh/woodhouse/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/mboeh/woodhouse">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/mboeh">mboeh</a></p>
+
+
+      </header>
+      <section>
+        <h1>Woodhouse</h1>
+
+<p>An AMQP-based background worker system for Ruby 1.8 and 1.9 designed to make managing heterogenous tasks relatively easy.</p>
+
+<p>The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly
+in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary
+goal is to provide a sane way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.</p>
+
+<h2>Usage</h2>
+
+<p>Woodhouse is currently being developed. It is not production-ready, and is liable to change significantly at any time. Caveat emptor.</p>
+
+<p>Usage examples are forthcoming. Some configuration is required for Rails 2, but Rails 3 should work out of the box by just adding Woodhouse
+to your Gemfile.</p>
+
+<h2>Features (current)</h2>
+
+<ul>
+<li>Configurable worker sets per server</li>
+<li>Configurable number of threads per worker</li>
+<li>Segmenting a single queue among multiple workers based on job characteristics (using AMQP header exchanges)</li>
+</ul><h2>Features (planned)</h2>
+
+<ul>
+<li>Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting</li>
+<li>Persistent configuration changes -- configuration changes saved to a data store and kept across deploys</li>
+<li>Watchdog/status workers on every node</li>
+<li>Web interface</li>
+</ul><h2>To Do</h2>
+
+<ul>
+<li>Examples and guides</li>
+<li>More documentation</li>
+<li>Watchdog system</li>
+</ul><h2>Acknowledgements</h2>
+
+<p>Woodhouse originated in a substantially modified version of the Workling background worker system, and still retains some code
+and structure from that project.</p>
+
+<p>This library was developed for <a href="http://crowdcompass.com">CrowdCompass</a> and was released as open source with their permission.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
