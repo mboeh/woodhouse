@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# Sample script to start up a Woodhouse server.
+
+# Load the Rails environment.
+require File.expand_path(File.dirname(__FILE__) + '/../config/environment')
+
+# Set up a separate log for Woodhouse. You could also do this in an initializer.
+log = Logger.new(File.dirname(__FILE__) + "/../log/woodhouse.log")
+log.level = Logger::DEBUG
+log.formatter = Logger::Formatter.new
+Woodhouse.global_configuration.logger = log
+
+# If you're using New Relic, uncomment this and the shutdown line below.
+# ::NewRelic::Agent.manual_start
+
+Woodhouse::Process.new.execute
+
+# ::NewRelic::Agent.shutdown
+
+exit
