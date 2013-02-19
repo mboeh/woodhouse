@@ -1,11 +1,11 @@
 # TODO: take arguments. Also consider using thor.
 class Woodhouse::Process
+
+  def initialize(keyw = {})
+    @server = keyw[:server] || build_default_server(keyw)
+  end
   
   def execute
-    @server = Woodhouse::Server.new
-    @server.layout = Woodhouse.global_layout
-    @server.node = :default
-    
     # Borrowed this from sidekiq. https://github.com/mperham/sidekiq/blob/master/lib/sidekiq/cli.rb
     trap "INT" do
       Thread.main.raise Interrupt
@@ -23,6 +23,15 @@ class Woodhouse::Process
       puts "Shutting down."
       @server.shutdown!
       @server.wait(:shutdown)
+    end
+  end
+
+  private
+
+  def build_default_server(keyw)
+    Woodhouse::Server.new.tap do |server|
+      server.layout = keyw[:layout] || Woodhouse.global_layout
+      server.node   = keyw[:node]   || :default
     end
   end
 
