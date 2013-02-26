@@ -5,6 +5,7 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   def initialize(config)
     super
     @bunny = Bunny.new(@config.server_info || {})
+    @bunny.start
   end
 
   private
@@ -26,7 +27,6 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   end
 
   def run
-    @bunny.start unless @bunny.connected?
     yield
   end
 
