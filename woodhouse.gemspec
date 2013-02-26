@@ -20,13 +20,13 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'fiber18', '>= 1.0.1'
   s.add_dependency 'celluloid'
+  s.add_dependency 'bunny', "~> 0.9.0.pre4"
 
   s.add_development_dependency 'rspec', '~> 1.3.1'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'guard'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'mocha'
-  s.add_development_dependency 'bunny', "~> 0.9.0.pre4"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
