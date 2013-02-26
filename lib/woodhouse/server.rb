@@ -6,6 +6,8 @@ module Woodhouse
 
     attr_reader :layout, :node
 
+    trap_exit :scheduler_died
+
     def initialize(layout = nil, node = nil)
       self.layout = layout
       self.node = node
@@ -44,6 +46,10 @@ module Woodhouse
     end
 
     private
+
+    def scheduler_died(actor, reason)
+      signal :shutdown
+    end
 
     def dispatch_layout_changes
       if @layout.nil?

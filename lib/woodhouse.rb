@@ -3,6 +3,8 @@ module Woodhouse
   WorkerNotFoundError = Class.new(WoodhouseError)
   ConnectionError = Class.new(WoodhouseError)
   ConfigurationError = Class.new(WoodhouseError)
+  FatalError = Class.new(WoodhouseError)
+  BailOut = Class.new(FatalError)
 
   module Util
     

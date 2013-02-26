@@ -11,6 +11,7 @@ class Woodhouse::Scheduler
     include Celluloid
 
     attr_reader :worker
+    trap_exit :worker_died
 
     def initialize(scheduler, worker, config)
       expect_arg_or_nil :worker, Woodhouse::Layout::Worker, worker
@@ -37,14 +38,26 @@ class Woodhouse::Scheduler
 
     private
 
+    def worker_died(actor, reason)
+      if reason
+        @config.logger.info "Worker died (#{reason.class}: #{reason.message}). Spinning down."
+        @threads.delete actor
+        raise Woodhouse::BailOut
+      end
+    end
+
     def spin_up
       @worker_def.threads.times do |idx|
         @config.logger.debug "Spinning up thread #{idx} for worker #{@worker_def.describe}"
-        @threads << @config.runner_type.new_link(@worker_def, @config)
+        worker = @config.runner_type.new_link(@worker_def, @config)
+        @threads << worker
+        worker.subscribe!
       end
     end
 
   end
+
+  trap_exit :worker_set_died
 
   def initialize(config)
     @config = config
@@ -89,6 +102,17 @@ class Woodhouse::Scheduler
 
   def remove_worker(worker)
     @worker_sets.delete(worker)
+  end
+
+  def worker_set_died(actor, reason)
+    if reason
+      @config.logger.info "Worker set died (#{reason.class}: #{reason.message}). Spinning down."
+      begin
+        spin_down
+      ensure
+        raise reason
+      end
+    end
   end
 
 end

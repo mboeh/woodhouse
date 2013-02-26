@@ -25,6 +25,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
     queue = channel.queue(@worker.queue_name)
     exchange = channel.exchange(@worker.exchange_name, :type => :headers)
     queue.bind(exchange, :arguments => @worker.criteria.amqp_headers)
+    worker = Celluloid.current_actor
     queue.subscribe(:ack => true).each(:blocking => false) do |headers, msg|
       begin
         job = make_job(headers)
@@ -39,11 +40,15 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
           headers.reject
         end
       rescue => err
-        @config.logger.error("Error bubbled up out of worker. This shouldn't happen. #{err.message}")
-        err.backtrace.each do |btr|
-          @config.logger.error("  #{btr}")
+        begin
+          @config.logger.error("Error bubbled up out of worker. This shouldn't happen. #{err.message}")
+          err.backtrace.each do |btr|
+            @config.logger.error("  #{btr}")
+          end
+          headers.reject
+        ensure
+          worker.bail_out(err)
         end
-        spin_down
       end
     end
     wait :spin_down
@@ -54,6 +59,10 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
   end
 
   private
+
+  def bail_out(err)
+    raise Woodhouse::BailOut, "#{err.class}: #{err.message}"
+  end
 
   def make_job(headers)
     Woodhouse::Job.new(@worker.worker_class_name, @worker.job_method) do |job|

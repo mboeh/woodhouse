@@ -40,7 +40,7 @@ class Woodhouse::JobExecution
     }
   end
 
-  FATAL_ERRORS = [ NoMemoryError ]
+  FATAL_ERRORS = [ NoMemoryError, Woodhouse::FatalError ]
   if defined? Java
     FATAL_ERRORS << Java::JavaLang::OutOfMemoryError
   end

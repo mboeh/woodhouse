@@ -18,7 +18,7 @@ class Woodhouse::Process
     begin
       @server.start!
       puts "Woodhouse serving as of #{Time.now}. Ctrl-C to stop."
-      sleep
+      @server.wait(:shutdown) 
     rescue Interrupt
       puts "Shutting down."
       @server.shutdown!
