@@ -22,6 +22,8 @@ class Woodhouse::JobExecution
         work_object.send(job.job_method, job)
       }
       return true
+    rescue *fatal_errors => err
+      raise err  
     rescue => err
       # Ignore the exception
       return false
@@ -37,5 +39,14 @@ class Woodhouse::JobExecution
       h
     }
   end
-      
+
+  FATAL_ERRORS = [ NoMemoryError ]
+  if defined? Java
+    FATAL_ERRORS << Java::JavaLang::OutOfMemoryError
+  end
+
+  def fatal_errors
+    FATAL_ERRORS
+  end
+
 end
