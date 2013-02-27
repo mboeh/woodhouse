@@ -6,6 +6,7 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
     super
     @bunny = Bunny.new(@config.server_info || {})
     @bunny.start
+    @mutex = Mutex.new
   end
 
   private
@@ -27,7 +28,9 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   end
 
   def run
-    yield
+    @mutex.synchronize do
+      yield
+    end
   end
 
 end
