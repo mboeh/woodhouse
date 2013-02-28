@@ -1,5 +1,14 @@
 class Woodhouse::JobExecution
 
+  class << self
+    attr_accessor :fatal_error_proc
+  end
+
+  memory_error_rx = /((OutOf|NoMemory)Error|Java heap space)/
+  self.fatal_error_proc = lambda do |err|
+    err.name =~ memory_error_rx or err.message =~ memory_error_rx
+  end
+  
   def initialize(config, job)
     @config = config
     @job = job
@@ -22,11 +31,15 @@ class Woodhouse::JobExecution
         work_object.send(job.job_method, job)
       }
       return true
-    rescue *fatal_errors => err
-      raise err  
+    rescue Woodhouse::FatalError
+      raise
     rescue => err
-      # Ignore the exception
-      return false
+      if fatal_error?(err)
+        raise err
+      else
+        # Ignore the exception
+        return false
+      end
     end
   end
 
@@ -40,13 +53,8 @@ class Woodhouse::JobExecution
     }
   end
 
-  FATAL_ERRORS = [ NoMemoryError, Woodhouse::FatalError ]
-  if defined? Java
-    FATAL_ERRORS << Java::JavaLang::OutOfMemoryError
-  end
-
-  def fatal_errors
-    FATAL_ERRORS
+  def fatal_error?(err)
+    self.class.fatal_error_proc.call(err)
   end
 
 end
