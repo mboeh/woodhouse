@@ -29,12 +29,25 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   end
 
   def run
+    retried = false
     @pool.with do |conn|
       yield conn
+    end
+  rescue Bunny::ClientTimeout
+    if retried
+      raise
+    else
+      new_pool!
+      retried = true
+      retry
     end
   end
 
   private
+
+  def new_pool!
+    @pool = new_pool
+  end
 
   def new_pool
     @bunny.stop if @bunny
