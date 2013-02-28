@@ -140,7 +140,8 @@ module Woodhouse::Progress
 
     def update_progress(data)
       job = self
-      Celluloid.future { progress_sink.update_job(job, data) }
+      Celluloid::Future.new { progress_sink.update_job(job, data) }
+      nil
     end
 
     def progress_sink
