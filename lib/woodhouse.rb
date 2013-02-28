@@ -31,6 +31,10 @@ module Woodhouse
   # some of this down into NodeConfiguration or something like it.
   module GlobalMethods 
 
+    def logger
+      global_configuration.logger
+    end
+
     def global_configuration
       @global_configuration ||= Woodhouse::NodeConfiguration.default
     end

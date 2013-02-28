@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'fiber18', '>= 1.0.1'
   s.add_dependency 'celluloid'
   s.add_dependency 'bunny', "~> 0.9.0.pre4"
+  s.add_dependency 'connection_pool'
 
   s.add_development_dependency 'rspec', '~> 1.3.1'
   s.add_development_dependency 'rake'

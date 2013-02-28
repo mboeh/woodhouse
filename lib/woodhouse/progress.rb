@@ -118,7 +118,7 @@ module Woodhouse::Progress
       end
 
       self.top = new_top if new_top
-
+       
       job.update_progress(to_hash)
     end
 
