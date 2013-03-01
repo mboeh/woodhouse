@@ -21,6 +21,7 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatcher
     def initialize(config)
       super
       new_pool!
+      @mutex = Mutex.new 
     end
   end
 
@@ -43,8 +44,9 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatcher
   end
 
   def run
-    @pool.with do |conn|
-      yield conn
+#    @pool.with do |conn|
+    @mutex.synchronize do
+      yield @channel
     end
   end
 
@@ -54,10 +56,10 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatcher
 
   def new_pool
     @connection = HotBunnies.connect(@config.server_info)
+    @channel = @connection.create_channel
 
-    client = @connection
-
-    ConnectionPool.new { client.create_channel }
+    #client = @connection
+#    ConnectionPool.new { client.create_channel }
   end
 
 end
