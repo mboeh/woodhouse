@@ -6,7 +6,7 @@ class Woodhouse::JobExecution
 
   memory_error_rx = /((OutOf|NoMemory)Error|Java heap space)/
   self.fatal_error_proc = lambda do |err|
-    err.name =~ memory_error_rx or err.message =~ memory_error_rx
+    err.class.name =~ memory_error_rx or err.message =~ memory_error_rx
   end
   
   def initialize(config, job)
