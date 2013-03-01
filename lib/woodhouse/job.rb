@@ -43,6 +43,12 @@ class Woodhouse::Job
     arguments[key.to_s]
   end
 
+  def maybe(meth, *args, &blk)
+    if respond_to?(meth)
+      send(meth, *args, &blk)
+    end
+  end
+
   # TODO: copypasted from Woodhouse::Layout::Worker. Fix that
   def exchange_name
     "#{worker_class_name}_#{job_method}".downcase
