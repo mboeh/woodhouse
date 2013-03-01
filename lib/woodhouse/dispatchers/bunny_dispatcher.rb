@@ -52,7 +52,7 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
   def new_pool
     @bunny.stop if @bunny
 
-    bunny = @bunny = Bunny.new((@config.server_info || {}).merge(:threaded => false))
+    bunny = @bunny = Bunny.new(@config.server_info || {})
     @bunny.start
 
     ConnectionPool.new { bunny.create_channel }
