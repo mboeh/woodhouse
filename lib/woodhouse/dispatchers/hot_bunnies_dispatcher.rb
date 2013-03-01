@@ -20,25 +20,44 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatcher
   else
     def initialize(config)
       super
-      @client = HotBunnies.connect(config.server_info).create_channel
+      new_pool!
     end
   end
 
   private
   
-  # FIXME: most of this is verbatim from BunnyDispatcher
-  attr_reader :client
-  
   def deliver_job(job)
-    exchange = client.exchange(job.exchange_name, :type => :headers)
-    exchange.publish(" ", :headers => job.arguments)
+    run do |client|  
+      exchange = client.exchange(job.exchange_name, :type => :headers)
+      exchange.publish(" ", :properties => { :headers => job.arguments })
+    end
   end
 
   def deliver_job_update(job, data)
-    exchange = client.exchange("woodhouse.progress", :type => :direct)
-    # establish durable queue to pick up updates
-    client.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
-    exchange.publish(data.to_json, :routing_key => job.job_id)
+    run do |client|
+      exchange = client.exchange("woodhouse.progress", :type => :direct)
+      # establish durable queue to pick up updates
+      client.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
+      exchange.publish(data.to_json, :routing_key => job.job_id)
+    end
+  end
+
+  def run
+    @pool.with do |conn|
+      yield conn
+    end
+  end
+
+  def new_pool!
+    @pool = new_pool
+  end
+
+  def new_pool
+    @connection = HotBunnies.connect(@config.server_info)
+
+    client = @connection
+
+    ConnectionPool.new { client.create_channel }
   end
 
 end

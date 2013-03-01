@@ -58,22 +58,18 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
     signal :spin_down
   end
 
-  private
-
   def bail_out(err)
     raise Woodhouse::BailOut, "#{err.class}: #{err.message}"
   end
 
+  private
+
   def make_job(headers)
     Woodhouse::Job.new(@worker.worker_class_name, @worker.job_method) do |job|
-      begin
-        job.arguments = headers.properties.headers.inject({}) {|h,(k,v)|
-          h[k.to_s] = v.to_s
-          h
-        }
-      rescue => err
-        spin_down
-      end
+      job.arguments = headers.properties.headers.inject({}) {|h,(k,v)|
+        h[k.to_s] = v.to_s
+        h
+      }
     end
   end
 
