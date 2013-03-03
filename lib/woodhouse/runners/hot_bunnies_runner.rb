@@ -26,9 +26,9 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
     exchange = channel.exchange(@worker.exchange_name, :type => :headers)
     queue.bind(exchange, :arguments => @worker.criteria.amqp_headers)
     worker = Celluloid.current_actor
-    queue.subscribe(:ack => true).each(:blocking => false) do |headers, msg|
+    queue.subscribe(:ack => true).each(:blocking => false) do |headers, payload|
       begin
-        job = make_job(headers)
+        job = make_job(headers, payload)
         if can_service_job?(job)
           if service_job(job)
             headers.ack
@@ -64,12 +64,13 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
 
   private
 
-  def make_job(headers)
+  def make_job(message, payload)
     Woodhouse::Job.new(@worker.worker_class_name, @worker.job_method) do |job|
-      job.arguments = headers.properties.headers.inject({}) {|h,(k,v)|
+      job.arguments = message.properties.headers.inject({}) {|h,(k,v)|
         h[k.to_s] = v.to_s
         h
       }
+      job.payload = payload
     end
   end
 

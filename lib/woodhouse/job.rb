@@ -2,7 +2,7 @@ require 'securerandom'
 require 'forwardable'
 
 class Woodhouse::Job
-  attr_accessor :worker_class_name, :job_method, :arguments
+  attr_accessor :worker_class_name, :job_method, :arguments, :payload
   extend Forwardable
 
   def_delegators :arguments, :each
@@ -13,6 +13,9 @@ class Woodhouse::Job
     self.arguments = args
     unless arguments["_id"]
       arguments["_id"] = generate_id
+    end
+    if arguments["payload"]
+      self.payload = arguments.delete("payload")
     end
     yield self if block_given?
   end
@@ -64,6 +67,10 @@ class Woodhouse::Job
   
   def generate_id
     SecureRandom.hex(16)
+  end
+
+  def payload
+    @payload || " "
   end
 
 end

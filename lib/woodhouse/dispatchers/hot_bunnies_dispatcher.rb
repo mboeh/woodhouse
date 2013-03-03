@@ -37,7 +37,7 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatchers::Com
   end
 
   def publish_job(job, exchange)
-    exchange.publish(" ", :properties => { :headers => job.arguments })
+    exchange.publish(job.payload, :properties => { :headers => job.arguments })
   end
 
   def new_connection

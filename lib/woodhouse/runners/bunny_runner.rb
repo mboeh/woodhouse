@@ -51,8 +51,9 @@ class Woodhouse::Runners::BunnyRunner < Woodhouse::Runner
 
   def make_job(properties, payload)
     Woodhouse::Job.new(@worker.worker_class_name, @worker.job_method) do |job|
-      args = properties.headers.merge(:payload => payload)
+      args = properties.headers
       job.arguments = args
+      job.payload = payload
     end
   end
 

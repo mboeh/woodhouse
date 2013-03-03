@@ -12,7 +12,7 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAm
   private
 
   def publish_job(job, exchange)
-    exchange.publish(" ", :headers => job.arguments)
+    exchange.publish(job.payload, :headers => job.arguments)
   end
 
   def run
