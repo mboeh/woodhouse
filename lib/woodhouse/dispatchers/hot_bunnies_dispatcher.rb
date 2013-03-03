@@ -9,7 +9,10 @@
 #
 # to your Gemfile.
 #
-class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatcher
+
+require 'woodhouse/dispatchers/common_amqp_dispatcher'
+
+class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatchers::CommonAmqpDispatcher
 
   begin
     require 'hot_bunnies'
@@ -20,46 +23,26 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatcher
   else
     def initialize(config)
       super
-      new_pool!
+      new_connection 
       @mutex = Mutex.new 
     end
   end
 
   private
   
-  def deliver_job(job)
-    run do |client|  
-      exchange = client.exchange(job.exchange_name, :type => :headers)
-      exchange.publish(" ", :properties => { :headers => job.arguments })
-    end
-  end
-
-  def deliver_job_update(job, data)
-    run do |client|
-      exchange = client.exchange("woodhouse.progress", :type => :direct)
-      # establish durable queue to pick up updates
-      client.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
-      exchange.publish(data.to_json, :routing_key => job.job_id)
-    end
-  end
-
   def run
-#    @pool.with do |conn|
     @mutex.synchronize do
       yield @channel
     end
   end
 
-  def new_pool!
-    @pool = new_pool
+  def publish_job(job, exchange)
+    exchange.publish(" ", :properties => { :headers => job.arguments })
   end
 
-  def new_pool
+  def new_connection
     @connection = HotBunnies.connect(@config.server_info)
     @channel = @connection.create_channel
-
-    #client = @connection
-#    ConnectionPool.new { client.create_channel }
   end
 
 end

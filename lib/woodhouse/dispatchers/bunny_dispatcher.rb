@@ -1,7 +1,8 @@
 require 'bunny'
 require 'connection_pool'
+require 'woodhouse/dispatchers/common_amqp_dispatcher'
 
-class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
+class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAmqpDispatcher
 
   def initialize(config)
     super
@@ -10,22 +11,8 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
 
   private
 
-  def deliver_job(job)
-    run do |conn|
-      exchange = conn.exchange(job.exchange_name, :type => :headers)
-      exchange.publish(" ", :headers => job.arguments)
-    end
-  end
-
-  def deliver_job_update(job, data)
-    run do |conn|
-      exchange = conn.direct("woodhouse.progress")
-      # establish durable queue to pick up updates
-      conn.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
-      exchange.publish(data.to_json, :routing_key => job.job_id)
-    end
-  rescue => err
-    Woodhouse.logger.warn("Error when dispatching job update: #{err.class}: #{err.message}")
+  def publish_job(job, exchange)
+    exchange.publish(" ", :headers => job.arguments)
   end
 
   def run
