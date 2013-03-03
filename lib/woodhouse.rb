@@ -91,3 +91,5 @@ require 'woodhouse/middleware_stack'
 require 'woodhouse/middleware'
 require 'woodhouse/rails'
 require 'woodhouse/process'
+
+require 'woodhouse/progress'
