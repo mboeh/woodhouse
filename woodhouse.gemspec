@@ -9,16 +9,15 @@ Gem::Specification.new do |s|
   s.authors     = ["Matthew Boeh"]
   s.email       = ["matt@crowdcompass.com", "matthew.boeh@gmail.com"]
   s.homepage    = "http://github.com/mboeh/woodhouse"
-  s.summary     = %q{An AMQP-based background worker system for Ruby 1.8 and 1.9}
-  s.description = %q{An AMQP-based background worker system for Ruby 1.8 and 1.9 designed to make managing heterogenous tasks relatively easy.
+  s.summary     = %q{An AMQP-based background worker system for Ruby}
+  s.description = %q{An AMQP-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.
   
   The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary goal is to provide a sane way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.
   
-  Clients (i.e., your application) may be using either Ruby 1.8 or 1.9 in any VM. Worker processes currently only support JRuby in 1.8 or 1.9 mode efficiently. MRI 1.9 and Rubinius support is planned.}
+  Clients (i.e., your application) may be using either Ruby 1.9 in any VM.}
 
   s.rubyforge_project = "woodhouse"
 
-  s.add_dependency 'fiber18', '>= 1.0.1'
   s.add_dependency 'celluloid'
   s.add_dependency 'bunny', "~> 0.9.0.pre4"
   s.add_dependency 'connection_pool'
