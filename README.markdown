@@ -42,7 +42,7 @@ The simplest way to set up a worker class is to include Woodhouse::Worker and de
         end
       end
 
-Jobs are dispatched asynchronously to a worker by adding `async\_` to the method name:
+Jobs are dispatched asynchronously to a worker by adding `async_` to the method name:
 
       IsisWorker.async_pam_gossip :who => "Cyril"
 
@@ -60,7 +60,7 @@ The dispatcher used for sending out jobs can be set in the Woodhouse config bloc
 Calling the `async` version of a job method sends it to the currently configured dispatcher. The default dispatcher
 type is `:local`, which simply executes the job synchronously (although still passing it through middleware; see below).
 
-If you want `girl\_friday` style in-process threaded backgrounding, you can get that by selecting the `:local\_pool`
+If you want `girl_friday` style in-process threaded backgrounding, you can get that by selecting the `:local_pool`
 dispatcher.
 
 Finally, if you want to run your jobs in a background process, you'll need to set up the `:amqp` dispatcher. This will
