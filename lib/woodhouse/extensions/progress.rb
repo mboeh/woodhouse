@@ -14,9 +14,7 @@ module Woodhouse::Progress
 
     def install!(configuration = Woodhouse.global_configuration)
       self.client = Woodhouse::Progress::BunnyProgressClient
-      Woodhouse.configure do |config|
-        config.runner_middleware << Woodhouse::Progress::InjectProgress
-      end
+      configuration.runner_middleware << Woodhouse::Progress::InjectProgress
     end
 
     def pull(job_id)
