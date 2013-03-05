@@ -21,7 +21,7 @@ class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatchers::Com
       raise err
     }
   else
-    def initialize(config)
+    def initialize(config, opts = {}, &blk)
       super
       new_connection 
       @mutex = Mutex.new 

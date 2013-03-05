@@ -22,7 +22,7 @@ class Woodhouse::Dispatcher
 
   private
 
-  def after_initialize
+  def after_initialize(config, opts = {}, &blk)
 
   end
 

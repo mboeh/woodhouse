@@ -4,7 +4,7 @@ require 'woodhouse/dispatchers/common_amqp_dispatcher'
 
 class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAmqpDispatcher
 
-  def initialize(config)
+  def initialize(config, opts = {}, &blk)
     super
     @pool = new_pool
   end
