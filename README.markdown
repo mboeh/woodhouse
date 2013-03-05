@@ -42,7 +42,7 @@ The simplest way to set up a worker class is to include Woodhouse::Worker and de
         end
       end
 
-Jobs are dispatched asynchronously to a worker by adding @async\_@ to the method name:
+Jobs are dispatched asynchronously to a worker by adding `async\_` to the method name:
 
       IsisWorker.async_pam_gossip :who => "Cyril"
 
@@ -57,13 +57,13 @@ The dispatcher used for sending out jobs can be set in the Woodhouse config bloc
         woodhouse.dispatcher_type = :local # :local_pool | :amqp
       end
       
-Calling the @async@ version of a job method sends it to the currently configured dispatcher. The default dispatcher
-type is @:local@, which simply executes the job synchronously (although still passing it through middleware; see below).
+Calling the `async` version of a job method sends it to the currently configured dispatcher. The default dispatcher
+type is `:local`, which simply executes the job synchronously (although still passing it through middleware; see below).
 
-If you want @girl\_friday@ style in-process threaded backgrounding, you can get that by selecting the @:local\_pool@
+If you want `girl\_friday` style in-process threaded backgrounding, you can get that by selecting the `:local\_pool`
 dispatcher.
 
-Finally, if you want to run your jobs in a background process, you'll need to set up the @:amqp@ dispatcher. This will
+Finally, if you want to run your jobs in a background process, you'll need to set up the `:amqp` dispatcher. This will
 use either the Hot Bunnies library (on JRuby) or the Bunny library (on all other Ruby engines). Bunny is suitable for
 dispatch but can be a little bit CPU-hungry in the background process. Hot Bunnies works great for both. You don't have
 to use the same Ruby version for your background process as for the dispatching application -- we use Woodhouse in production
@@ -87,11 +87,11 @@ Otherwise, you can do it in the Woodhouse config block:
 
 ### Running The Background Process
 
-All you have to do is run @script/woodhouse@. It'll load your Rails environment and start the server process. It responds to QUIT
+All you have to do is run `script/woodhouse`. It'll load your Rails environment and start the server process. It responds to QUIT
 and INT signals correctly; I'm working on seeing if I can get it to restart worker processes with HUP and to dump/load the current
 layout with USR1/USR2.
 
-@script/woodhouse@ logs job execution and results to @log/woodhouse.log@.
+`script/woodhouse` logs job execution and results to `log/woodhouse.log`.
 
 ### Performance Errata
 
@@ -100,7 +100,7 @@ plenty of heap but still get GC overhead errors, try bumping up the PermGen by i
 
       -J-XX:MaxPermSize=128m
 
-Performance will generally be better with the @--server@ flag:
+Performance will generally be better with the `--server` flag:
 
       --server
 
