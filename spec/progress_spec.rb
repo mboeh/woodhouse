@@ -1,4 +1,4 @@
-require 'woodhouse/progress'
+require 'woodhouse/extensions/progress'
 
 describe Woodhouse::Progress do
 
