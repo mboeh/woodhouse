@@ -8,11 +8,13 @@ module Woodhouse::Progress
 
     attr_accessor :client
 
-    def install!
+    def install_extension(configuration, opts = {}, &blk)
+      install!(configuration)
+    end
+
+    def install!(configuration = Woodhouse.global_configuration)
       self.client = Woodhouse::Progress::BunnyProgressClient
-      Woodhouse.configure do |config|
-        config.runner_middleware << Woodhouse::Progress::InjectProgress
-      end
+      configuration.runner_middleware << Woodhouse::Progress::InjectProgress
     end
 
     def pull(job_id)
@@ -118,7 +120,7 @@ module Woodhouse::Progress
       end
 
       self.top = new_top if new_top
-
+       
       job.update_progress(to_hash)
     end
 
@@ -139,7 +141,8 @@ module Woodhouse::Progress
     end
 
     def update_progress(data)
-      progress_sink.update_job(self, data)
+      job = self
+      Celluloid::Future.new { progress_sink.update_job(job, data) }
     end
 
     def progress_sink
@@ -158,3 +161,5 @@ module Woodhouse::Progress
   end
 
 end
+
+Woodhouse::Extension.register :progress, Woodhouse::Progress

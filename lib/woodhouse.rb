@@ -3,6 +3,8 @@ module Woodhouse
   WorkerNotFoundError = Class.new(WoodhouseError)
   ConnectionError = Class.new(WoodhouseError)
   ConfigurationError = Class.new(WoodhouseError)
+  FatalError = Class.new(WoodhouseError)
+  BailOut = Class.new(FatalError)
 
   module Util
     
@@ -28,6 +30,10 @@ module Woodhouse
   # TODO: hate keeping global state in this class. I need to push
   # some of this down into NodeConfiguration or something like it.
   module GlobalMethods 
+
+    def logger
+      global_configuration.logger
+    end
 
     def global_configuration
       @global_configuration ||= Woodhouse::NodeConfiguration.default
@@ -85,3 +91,9 @@ require 'woodhouse/middleware_stack'
 require 'woodhouse/middleware'
 require 'woodhouse/rails'
 require 'woodhouse/process'
+require 'woodhouse/layout_serializer'
+require 'woodhouse/trigger_set'
+
+require 'woodhouse/extension'
+require 'woodhouse/extensions/progress'
+require 'woodhouse/extensions/new_relic'

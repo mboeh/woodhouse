@@ -1,33 +1,48 @@
 require 'bunny'
+require 'connection_pool'
+require 'woodhouse/dispatchers/common_amqp_dispatcher'
 
-class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatcher
+class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAmqpDispatcher
 
   def initialize(config)
     super
-    @bunny = Bunny.new(@config.server_info || {})
+    @pool = new_pool
   end
 
   private
 
-  def deliver_job(job)
-    run do
-      exchange = @bunny.exchange(job.exchange_name, :type => :headers)
-      exchange.publish(" ", :headers => job.arguments)
-    end
-  end
-
-  def deliver_job_update(job, data)
-    run do
-      exchange = @bunny.direct("woodhouse.progress")
-      # establish durable queue to pick up updates
-      @bunny.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
-      exchange.publish(data.to_json, :routing_key => job.job_id)
-    end
+  def publish_job(job, exchange)
+    exchange.publish(job.payload, :headers => job.arguments)
   end
 
   def run
-    @bunny.start unless @bunny.connected?
-    yield
+    retried = false
+    @pool.with do |conn|
+      yield conn
+    end
+  rescue Bunny::ClientTimeout
+    if retried
+      raise
+    else
+      new_pool!
+      retried = true
+      retry
+    end
+  end
+
+  private
+
+  def new_pool!
+    @pool = new_pool
+  end
+
+  def new_pool
+    @bunny.stop if @bunny
+
+    bunny = @bunny = Bunny.new(@config.server_info || {})
+    @bunny.start
+
+    ConnectionPool.new { bunny.create_channel }
   end
 
 end

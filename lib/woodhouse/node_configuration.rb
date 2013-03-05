@@ -3,13 +3,19 @@ class Woodhouse::NodeConfiguration
 
   attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threads
   attr_accessor :dispatcher_middleware, :runner_middleware
+  attr_accessor :triggers
 
   def initialize
     self.default_threads = 1
     self.dispatcher_middleware = Woodhouse::MiddlewareStack.new(self)
     self.runner_middleware = Woodhouse::MiddlewareStack.new(self)
     self.server_info = {}
+    self.triggers = Woodhouse::TriggerSet.new
     yield self if block_given?
+  end
+
+  def at(event_name, &blk)
+    triggers.add(event_name, &blk)
   end
 
   def dispatcher
@@ -34,6 +40,10 @@ class Woodhouse::NodeConfiguration
 
   def server_info=(hash)
     @server_info = hash ? symbolize_keys(hash) : {}
+  end
+
+  def extension(name, opts = {}, &blk)
+    Woodhouse::Extension.install_extension(name, self, opts, &blk)
   end
 
   private

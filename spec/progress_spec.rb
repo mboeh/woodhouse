@@ -30,7 +30,7 @@ describe Woodhouse::Progress do
       it "should send progress updates" do
         ticker = job.status_ticker("orz")
         sink.should_receive(:update_job).with(job, { "orz" => { "status" => "funky", "current" => 1 } })
-        ticker.tick :status => "funky"
+        ticker.tick(:status => "funky").value
       end
 
     end

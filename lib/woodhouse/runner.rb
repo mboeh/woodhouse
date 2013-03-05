@@ -28,7 +28,6 @@ class Woodhouse::Runner
     @worker = worker
     @config = config
     @config.logger.debug "Thread for #{@worker.describe} ready and waiting for jobs"
-    subscribe!
   end
 
   # Implement this in a subclass. When this message is received by an actor, it should

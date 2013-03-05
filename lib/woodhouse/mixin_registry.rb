@@ -7,13 +7,17 @@ class Woodhouse::MixinRegistry < Woodhouse::Registry
     end
 
     def register(klass)
-      classes[klass.name.to_sym] = klass
+      register_worker klass.name, klass
+    end
+
+    def register_worker(class_name, klass)
+      classes[class_name.to_s] = klass
     end
 
   end
   
   def [](worker)
-    Woodhouse::MixinRegistry.classes[worker]
+    Woodhouse::MixinRegistry.classes[worker.to_s]
   end
 
   def each(&blk)

@@ -5,10 +5,14 @@ module Woodhouse
     include Woodhouse::Util
 
     attr_reader :layout, :node
+    attr_accessor :configuration
 
-    def initialize(layout = nil, node = nil)
-      self.layout = layout
-      self.node = node
+    trap_exit :scheduler_died
+
+    def initialize(keyw = {})
+      self.layout        = keyw[:layout]
+      self.node          = keyw[:node]
+      self.configuration = keyw[:configuration] || Woodhouse.global_configuration
     end
 
     def layout=(value)
@@ -23,8 +27,9 @@ module Woodhouse
 
     def start
       # TODO: don't pass global config
-      @scheduler ||= Woodhouse::Scheduler.new_link(Woodhouse.global_configuration)
+      @scheduler ||= Woodhouse::Scheduler.new_link(configuration)
       return false unless ready_to_start?
+      configuration.triggers.trigger :server_start
       dispatch_layout_changes
       true
     end
@@ -40,10 +45,16 @@ module Woodhouse
     # TODO: do this better
     def shutdown
       @scheduler.spin_down
+      @scheduler.terminate
+      configuration.triggers.trigger :server_end
       signal :shutdown
     end
 
     private
+
+    def scheduler_died(actor, reason)
+      signal :shutdown
+    end
 
     def dispatch_layout_changes
       if @layout.nil?

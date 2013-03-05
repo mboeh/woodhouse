@@ -2,7 +2,7 @@ require 'securerandom'
 require 'forwardable'
 
 class Woodhouse::Job
-  attr_accessor :worker_class_name, :job_method, :arguments
+  attr_accessor :worker_class_name, :job_method, :arguments, :payload
   extend Forwardable
 
   def_delegators :arguments, :each
@@ -13,6 +13,9 @@ class Woodhouse::Job
     self.arguments = args
     unless arguments["_id"]
       arguments["_id"] = generate_id
+    end
+    if arguments["payload"]
+      self.payload = arguments.delete("payload")
     end
     yield self if block_given?
   end
@@ -43,6 +46,12 @@ class Woodhouse::Job
     arguments[key.to_s]
   end
 
+  def maybe(meth, *args, &blk)
+    if respond_to?(meth)
+      send(meth, *args, &blk)
+    end
+  end
+
   # TODO: copypasted from Woodhouse::Layout::Worker. Fix that
   def exchange_name
     "#{worker_class_name}_#{job_method}".downcase
@@ -58,6 +67,10 @@ class Woodhouse::Job
   
   def generate_id
     SecureRandom.hex(16)
+  end
+
+  def payload
+    @payload || " "
   end
 
 end

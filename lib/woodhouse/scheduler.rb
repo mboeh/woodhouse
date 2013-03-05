@@ -11,6 +11,7 @@ class Woodhouse::Scheduler
     include Celluloid
 
     attr_reader :worker
+    trap_exit :worker_died
 
     def initialize(scheduler, worker, config)
       expect_arg_or_nil :worker, Woodhouse::Layout::Worker, worker
@@ -26,6 +27,7 @@ class Woodhouse::Scheduler
       @threads.each_with_index do |thread, idx|
         @config.logger.debug "Spinning down thread #{idx} for worker #{@worker_def.describe}"
         thread.spin_down
+        thread.terminate
       end
       @scheduler.remove_worker(@worker_def)
       signal :spun_down
@@ -37,14 +39,26 @@ class Woodhouse::Scheduler
 
     private
 
+    def worker_died(actor, reason)
+      if reason
+        @config.logger.info "Worker died (#{reason.class}: #{reason.message}). Spinning down."
+        @threads.delete actor
+        raise Woodhouse::BailOut
+      end
+    end
+
     def spin_up
       @worker_def.threads.times do |idx|
         @config.logger.debug "Spinning up thread #{idx} for worker #{@worker_def.describe}"
-        @threads << @config.runner_type.new_link(@worker_def, @config)
+        worker = @config.runner_type.new_link(@worker_def, @config)
+        @threads << worker
+        worker.subscribe!
       end
     end
 
   end
+
+  trap_exit :worker_set_died
 
   def initialize(config)
     @config = config
@@ -64,8 +78,7 @@ class Woodhouse::Scheduler
   def stop_worker(worker, wait = false)
     if set = @worker_sets[worker]
       @config.logger.debug "Spinning down worker #{worker.describe}"
-      set.spin_down!
-      set.wait_until_done if wait
+      set.spin_down
     end
   end
   
@@ -77,18 +90,24 @@ class Woodhouse::Scheduler
     @spinning_down = true
     @config.logger.debug "Spinning down all workers"
     @worker_sets.each do |worker, set|
-      set.spin_down!
-    end
-    @worker_sets.keys.each do |worker|
-      set = @worker_sets[worker]
-      if set
-        set.wait_until_done
-      end
+      set.spin_down
+      set.terminate
     end
   end
 
   def remove_worker(worker)
     @worker_sets.delete(worker)
+  end
+
+  def worker_set_died(actor, reason)
+    if reason
+      @config.logger.info "Worker set died (#{reason.class}: #{reason.message}). Spinning down."
+      begin
+        spin_down
+      ensure
+        raise reason
+      end
+    end
   end
 
 end
