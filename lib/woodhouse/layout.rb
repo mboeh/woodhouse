@@ -149,7 +149,7 @@ module Woodhouse
       def default_configuration!(config, options = {})
         options[:threads] ||= config.default_threads
         config.registry.each do |name, klass|
-          klass.public_instance_methods(false).each do |method|
+          klass.available_jobs.each do |method|
             add_worker Woodhouse::Layout::Worker.new(name, method, options)
           end
         end

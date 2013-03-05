@@ -68,6 +68,18 @@ module Woodhouse::Worker
       end
     end
 
+    def available_jobs
+      @available_jobs ||= public_instance_methods(false)
+    end
+
+    def only_jobs(*jobs)
+      @available_jobs = jobs
+    end
+
+    def exclude_jobs(*jobs)
+      @available_jobs -= jobs
+    end
+
     # You can dispatch a job +baz+ on class +FooBar+ by calling FooBar.async_baz.
     def method_missing(method, *args, &block)
       if method.to_s =~ /^asynch?_(.*)/

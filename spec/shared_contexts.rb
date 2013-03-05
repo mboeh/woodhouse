@@ -5,6 +5,10 @@ class FakeWorker
   class << self
     attr_accessor :last_worker
     attr_accessor :jobs
+
+    def available_jobs
+      [:foo, :bar]
+    end
   end
 
   self.jobs ||= []
