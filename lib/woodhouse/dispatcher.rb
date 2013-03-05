@@ -1,7 +1,8 @@
 class Woodhouse::Dispatcher
 
-  def initialize(config)
+  def initialize(config, opts = {}, &blk)
     @config = config
+    after_initialize(config, opts = {}, &blk)
   end
 
   def dispatch(class_name, job_method, arguments)
@@ -20,6 +21,10 @@ class Woodhouse::Dispatcher
   end
 
   private
+
+  def after_initialize
+
+  end
 
   def deliver_job(job)
     raise NotImplementedError, "implement #deliver_job in a subclass of Woodhouse::Dispatcher"
