@@ -93,4 +93,5 @@ require 'woodhouse/rails'
 require 'woodhouse/process'
 require 'woodhouse/layout_serializer'
 
+require 'woodhouse/extension'
 require 'woodhouse/progress'

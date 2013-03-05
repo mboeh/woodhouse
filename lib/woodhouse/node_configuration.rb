@@ -36,6 +36,10 @@ class Woodhouse::NodeConfiguration
     @server_info = hash ? symbolize_keys(hash) : {}
   end
 
+  def extension(name, opts = {}, &blk)
+    Woodhouse::Extension.install_extension(name, self, opts, &blk)
+  end
+
   private
 
   def lookup_key(key, namespace)

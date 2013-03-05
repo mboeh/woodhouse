@@ -8,7 +8,11 @@ module Woodhouse::Progress
 
     attr_accessor :client
 
-    def install!
+    def install_extension(configuration, opts = {}, &blk)
+      install!(configuration)
+    end
+
+    def install!(configuration = Woodhouse.global_configuration)
       self.client = Woodhouse::Progress::BunnyProgressClient
       Woodhouse.configure do |config|
         config.runner_middleware << Woodhouse::Progress::InjectProgress
@@ -160,3 +164,5 @@ module Woodhouse::Progress
   end
 
 end
+
+Woodhouse::Extension.register :progress, Woodhouse::Progress
