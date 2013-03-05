@@ -16,7 +16,7 @@ Woodhouse 0.0.x is production-ready for Rails 2 and Ruby 1.8, while 0.1.x is in 
 
 Add
 
-      gem 'woodhouse', github: 'mboeh/woodhouse', branch: 'next'
+      gem 'woodhouse', github: 'mboeh/woodhouse'
 
 to your Gemfile.
 
