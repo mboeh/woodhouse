@@ -4,31 +4,40 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Woodhouse by mboeh</title>
-
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
   <body>
-    <div class="wrapper">
+
       <header>
-        <h1 class="header">Woodhouse</h1>
-        <p class="header">An AMQP-based background worker system for Ruby.</p>
-
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/mboeh/woodhouse/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/mboeh/woodhouse/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/mboeh/woodhouse">View On GitHub</a></li>
-        </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/mboeh">mboeh</a></p>
-
-
+        <h1>Woodhouse</h1>
+        <p>An AMQP-based background worker system for Ruby.</p>
       </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/mboeh/woodhouse" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/mboeh/woodhouse/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/mboeh/woodhouse/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
       <section>
         <h1>Woodhouse</h1>
 
@@ -44,8 +53,112 @@ goal is to provide a sane way for jobs on a given queue to be given special prio
 
 <h2>Usage</h2>
 
-<p>Usage examples are forthcoming. Some configuration is required for Rails 2, but Rails 3 should work out of the box by just adding Woodhouse
-to your Gemfile.</p>
+<h3>Rails</h3>
+
+<p>Add</p>
+
+<pre><code>  gem 'woodhouse', github: 'mboeh/woodhouse'
+</code></pre>
+
+<p>to your Gemfile.</p>
+
+<p>Run</p>
+
+<pre><code>  % rails generate woodhouse
+</code></pre>
+
+<p>to create script/woodhouse and config/initializers/woodhouse.rb.</p>
+
+<h3>Basic Usage</h3>
+
+<p>The simplest way to set up a worker class is to include Woodhouse::Worker and define public methods.</p>
+
+<pre><code>  class IsisWorker
+    include Woodhouse::Worker
+
+    def pam_gossip(job)
+      puts "Pam gossips about #{job[:who]}."
+    end
+
+    def sterling_insult(job)
+      puts "Sterling insults #{job[:who]}."
+    end
+  end
+</code></pre>
+
+<p>Jobs are dispatched asynchronously to a worker by adding <code>async_</code> to the method name:</p>
+
+<pre><code>  IsisWorker.async_pam_gossip :who =&gt; "Cyril"
+</code></pre>
+
+<p>Woodhouse jobs always take a hash of arguments. The worker receives a Woodhouse::Job, which acts like a hash
+but also supplies additional functionality.</p>
+
+<h3>Dispatchers</h3>
+
+<p>The dispatcher used for sending out jobs can be set in the Woodhouse config block:</p>
+
+<pre><code>  Woodhouse.configure do |woodhouse|
+    woodhouse.dispatcher_type = :local # :local_pool | :amqp
+  end
+</code></pre>
+
+<p>Calling the <code>async</code> version of a job method sends it to the currently configured dispatcher. The default dispatcher
+type is <code>:local</code>, which simply executes the job synchronously (although still passing it through middleware; see below).</p>
+
+<p>If you want <code>girl_friday</code> style in-process threaded backgrounding, you can get that by selecting the <code>:local_pool</code>
+dispatcher.</p>
+
+<p>Finally, if you want to run your jobs in a background process, you'll need to set up the <code>:amqp</code> dispatcher. This will
+use either the Hot Bunnies library (on JRuby) or the Bunny library (on all other Ruby engines). Bunny is suitable for
+dispatch but can be a little bit CPU-hungry in the background process. Hot Bunnies works great for both. You don't have
+to use the same Ruby version for your background process as for the dispatching application -- we use Woodhouse in production
+with a JRuby background process and MRI frontend processes.</p>
+
+<p>You'll also need to have RabbitMQ running. If it's running with the default (open) permissions on the local server, you don't
+need to configure it at all. Otherwise, you'll have to set the server connection info. You have two options for this. On Rails,
+you can create a config/woodhouse.yml file, formatted similar to config/database.yml:</p>
+
+<pre><code>  production:
+    host: myrabbitmq.server.local
+    vhost: /some-vhost
+</code></pre>
+
+<p>(The parameters accepted here are the same used for Bunny.connect; I promise to document them here soon.)</p>
+
+<p>Otherwise, you can do it in the Woodhouse config block:</p>
+
+<pre><code>  Woodhouse.configure do |woodhouse|
+    woodhouse.server_info = { :host =&gt; "myrabbitmq.server.local" }
+  end
+</code></pre>
+
+<h3>Running The Background Process</h3>
+
+<p>All you have to do is run <code>script/woodhouse</code>. It'll load your Rails environment and start the server process. It responds to QUIT
+and INT signals correctly; I'm working on seeing if I can get it to restart worker processes with HUP and to dump/load the current
+layout with USR1/USR2.</p>
+
+<p><code>script/woodhouse</code> logs job execution and results to <code>log/woodhouse.log</code>.</p>
+
+<h3>Performance Errata</h3>
+
+<p>If you're using JRuby with a large application, I've found that the JVM's permanent generation can get exhausted. If you have
+plenty of heap but still get GC overhead errors, try bumping up the PermGen by including this on the JRuby command line:</p>
+
+<pre><code>  -J-XX:MaxPermSize=128m
+</code></pre>
+
+<p>Performance will generally be better with the <code>--server</code> flag:</p>
+
+<pre><code>  --server
+</code></pre>
+
+<p>A lot of the jobs I run tend to allocate and dispose a lot of memory very quickly, and Woodhouse will be a long-running process.
+I've gotten good results from enabling aggressive heap tuning:</p>
+
+<pre><code>  -J-XX:+AggressiveHeap
+</code></pre>
 
 <h2>Features</h2>
 
@@ -54,6 +167,7 @@ to your Gemfile.</p>
 <li>Configurable number of threads per worker</li>
 <li>Segmenting a single queue among multiple workers based on job characteristics (using AMQP header exchanges)</li>
 <li>Progress reporting on jobs</li>
+<li>New Relic background job reporting</li>
 <li>Job dispatch and execution middleware stacks</li>
 </ul><h2>Upcoming</h2>
 
@@ -83,16 +197,17 @@ to your Gemfile.</p>
 <li>MRI, JRuby, Rubinius</li>
 </ul><h3>Acknowledgements</h3>
 
-<p>Woodhouse originated in a substantially modified version of the Workling background worker system, and still retains some code
-and structure from that project.</p>
+<p>Woodhouse originated in a substantially modified version of the Workling background worker system, although all code has since
+been replaced.</p>
 
 <p>This library was developed for <a href="http://crowdcompass.com">CrowdCompass</a> and was released as open source with their permission.</p>
       </section>
       <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <p>Project maintained by <a href="https://github.com/mboeh">mboeh</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+    
   </body>
 </html>
