@@ -48,6 +48,8 @@ describe Woodhouse::LayoutBuilder do
     odin = layout.node(:odin)
     odin.workers.should have(2).workers
     odin.workers.first.threads.should == 5
+
+    Woodhouse::Layout.load(layout.dump).dump.should == layout.dump
   end
 
 end

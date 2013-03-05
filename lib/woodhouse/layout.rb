@@ -49,6 +49,7 @@ module Woodhouse
       end
       expect_arg :node, Woodhouse::Layout::Node, node
       @nodes << node
+      node
     end
 
     # Looks up a Node by name and returns it.
@@ -76,6 +77,14 @@ module Woodhouse
     # spinning up and down nodes/workers which have changed.
     def changes_from(other_layout, node)
       Woodhouse::Layout::Changes.new(self, other_layout, node)
+    end
+
+    def dump(serializer = Woodhouse::LayoutSerializer)
+      serializer.dump(self)
+    end
+
+    def self.load(dumped, serializer = Woodhouse::LayoutSerializer)
+      serializer.load(dumped)
     end
 
     # The default layout, for convenience purposes. Has one node +:default+,
