@@ -23,16 +23,19 @@ class Woodhouse::Process
       puts "Shutting down."
       @server.shutdown!
       @server.wait(:shutdown)
+    ensure
+      @server.terminate
+      exit
     end
   end
 
   private
 
   def build_default_server(keyw)
-    Woodhouse::Server.new.tap do |server|
-      server.layout = keyw[:layout] || Woodhouse.global_layout
-      server.node   = keyw[:node]   || :default
-    end
+    Woodhouse::Server.new(
+      :layout => keyw[:layout] || Woodhouse.global_layout,
+      :node   => keyw[:node]   || :default
+    )
   end
 
 end

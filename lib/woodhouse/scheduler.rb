@@ -27,6 +27,7 @@ class Woodhouse::Scheduler
       @threads.each_with_index do |thread, idx|
         @config.logger.debug "Spinning down thread #{idx} for worker #{@worker_def.describe}"
         thread.spin_down
+        thread.terminate
       end
       @scheduler.remove_worker(@worker_def)
       signal :spun_down
@@ -77,8 +78,7 @@ class Woodhouse::Scheduler
   def stop_worker(worker, wait = false)
     if set = @worker_sets[worker]
       @config.logger.debug "Spinning down worker #{worker.describe}"
-      set.spin_down!
-      set.wait_until_done if wait
+      set.spin_down
     end
   end
   
@@ -90,13 +90,8 @@ class Woodhouse::Scheduler
     @spinning_down = true
     @config.logger.debug "Spinning down all workers"
     @worker_sets.each do |worker, set|
-      set.spin_down!
-    end
-    @worker_sets.keys.each do |worker|
-      set = @worker_sets[worker]
-      if set
-        set.wait_until_done
-      end
+      set.spin_down
+      set.terminate
     end
   end
 

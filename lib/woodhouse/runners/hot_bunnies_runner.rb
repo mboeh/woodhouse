@@ -52,6 +52,8 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
       end
     end
     wait :spin_down
+  ensure
+    client.close
   end
 
   def spin_down
