@@ -21,7 +21,7 @@ describe Woodhouse::LayoutBuilder do
         # Five workers...
         default.remove :Ray, :foo
         # Six workers.
-        default.add    :Ray, :bar, :only => { :baz => "bat" }
+        default.add    :Ray, :bar, :only => { :baz => "bat" }, :exclusive => true
       end
       layout.node(:odin) do |odin|
         # Two workers.
@@ -45,6 +45,7 @@ describe Woodhouse::LayoutBuilder do
     }
     ray.should_not be_nil
     ray.criteria.matches?("baz" => "bat").should be_true
+    ray.criteria.should be_exclusive
     odin = layout.node(:odin)
     odin.workers.should have(2).workers
     odin.workers.first.threads.should == 5

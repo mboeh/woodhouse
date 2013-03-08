@@ -2,13 +2,16 @@ module Woodhouse
 
   class QueueCriteria
     attr_reader :criteria
+    attr_accessor :exclusive
 
-    def initialize(opts = {})
-      if opts.kind_of?(self.class)
-        opts = opts.criteria
+    def initialize(values = {}, flags = nil)
+      flags ||= {}
+      self.exclusive ||= flags[:exclusive]
+      if values.kind_of?(self.class)
+        values = values.criteria
       end
-      unless opts.nil?
-        @criteria = stringify_values(opts).freeze
+      unless values.nil?
+        @criteria = stringify_values(values).freeze
       end
     end
 
@@ -33,9 +36,15 @@ module Woodhouse
 
     def matches?(args)
       return true if @criteria.nil?
+      return false if exclusive? and @criteria.length != args.keys.reject{|k| k =~ /^_/ }.length
+
       @criteria.all? do |key, val|
         args[key] == val
       end
+    end
+
+    def exclusive?
+      !!exclusive
     end
 
     private

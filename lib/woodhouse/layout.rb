@@ -188,16 +188,16 @@ module Woodhouse
     #
     class Worker
       attr_reader :worker_class_name, :job_method, :threads, :criteria
+      attr_accessor :flags
 
       def initialize(worker_class_name, job_method, opts = {})
         opts = opts.clone
         self.worker_class_name = worker_class_name
         self.job_method = job_method
-        self.threads = opts.delete(:threads) || 1
-        self.criteria = opts.delete(:only)
-        unless opts.keys.empty? 
-          raise ArgumentError, "unknown option keys: #{opts.keys.inspect}"
-        end
+        self.threads   = opts.delete(:threads) || 1
+        criteria  = opts.delete(:only)
+        self.flags     = opts
+        self.criteria  = criteria
       end
       
       def exchange_name
@@ -221,7 +221,7 @@ module Woodhouse
       end
 
       def criteria=(value)
-        @criteria = Woodhouse::QueueCriteria.new(value).freeze
+        @criteria = Woodhouse::QueueCriteria.new(value, flags).freeze
       end
 
       def frozen_clone
