@@ -4,6 +4,9 @@ require 'digest/sha1'
 
 module Woodhouse::Progress
 
+  QUEUE_TTL  = 5 * 60 * 1000 # unused progress queues expire after 5 minutes
+  UPDATE_TTL = 30 * 1000     # unfetched progress updates expire after 30 seconds
+
   class << self
 
     attr_accessor :client
@@ -13,7 +16,7 @@ module Woodhouse::Progress
     end
 
     def install!(configuration = Woodhouse.global_configuration)
-      self.client = Woodhouse::Progress::BunnyProgressClient
+      self.client = Woodhouse::Progress::AmqpProgressClient
       configuration.runner_middleware << Woodhouse::Progress::InjectProgress
     end
 
@@ -64,7 +67,7 @@ module Woodhouse::Progress
       begin
         channel = bunny.create_channel
         exchange = channel.direct("woodhouse.progress")
-        queue = channel.queue(job_id, :durable => true)
+        queue = channel.queue(job_id, Progress.queue_options)
         queue.bind(exchange, :routing_key => job_id)
         payload = nil
         queue.message_count.times do
@@ -74,6 +77,18 @@ module Woodhouse::Progress
         payload
       ensure
         bunny.stop
+      end
+    end
+
+  end
+
+  class AmqpProgressClient < ProgressClient
+    
+    protected
+
+    def pull_progress(job_id)
+      config.amqp_connection.connect do |channel|
+        return channel.progress_queue(job_id).fetch
       end
     end
 

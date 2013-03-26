@@ -1,25 +1,8 @@
-#
-# A Runner implementation that uses hot_bunnies, a JRuby AMQP client using the
-# Java client for RabbitMQ. This class can be loaded if hot_bunnies is not
-# available, but it will fail upon initialization. If you want to use this
-# runner (it's currently the only one that works very well), make sure to
-# add
-#
-#   gem 'hot_bunnies'
-#
-# to your Gemfile. This runner will automatically be used in JRuby.
-#
-class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
-  begin
-    require 'hot_bunnies'
-  rescue LoadError => err
-    define_method(:initialize) {|*args|
-      raise err
-    }
-  end
+# A generic AMQP runner that relies on a Connection.
+class Woodhouse::Runners::AmqpRunner < Woodhouse::Runner
 
   def subscribe
-    Woodhouse::HotBunniesConnection.new(@config.server_info).connect do |cx|
+    @config.amqp_connection.connect do |cx|
       cx.open_channel do |channel|
         channel.enable_prefetch
         channel.worker_queue(@worker).subscribe do |message|
@@ -34,11 +17,11 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
     signal :spin_down
   end
 
+  private
+
   def bail_out(err)
     raise Woodhouse::BailOut, "#{err.class}: #{err.message}"
   end
-
-  private
 
   def handle_job(message, job)
     begin
