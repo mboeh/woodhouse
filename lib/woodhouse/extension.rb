@@ -14,7 +14,15 @@ class Woodhouse::Extension
     def install_extension(name, configuration, opts = {}, &blk)
       if ext = registry[name]
         ext.install_extension(configuration, opts, &blk)
+      else
+        ext = load_extension(name)
+        ext.install_extension(configuration, opts, &blk)
       end
+    end
+
+    def load_extension(name)
+      require "woodhouse/extensions/#{name}"
+      registry[name]
     end
 
   end
