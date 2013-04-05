@@ -66,6 +66,10 @@ module Woodhouse
       global_configuration.dispatcher.update_job(*a)
     end
 
+    def watchdog
+      Woodhouse::Watchdog.instance
+    end
+
   end
 
   extend GlobalMethods
@@ -92,6 +96,7 @@ require 'woodhouse/rails'
 require 'woodhouse/process'
 require 'woodhouse/layout_serializer'
 require 'woodhouse/trigger_set'
+require 'woodhouse/watchdog'
 
 require 'woodhouse/extension'
 require 'woodhouse/extensions/progress'

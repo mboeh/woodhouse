@@ -19,6 +19,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
   end
 
   def subscribe
+    status :spinning_up
     client = HotBunnies.connect(@config.server_info)
     channel = client.create_channel
     channel.prefetch = 1
@@ -26,7 +27,9 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
     exchange = channel.exchange(@worker.exchange_name, :type => :headers)
     queue.bind(exchange, :arguments => @worker.criteria.amqp_headers)
     worker = Celluloid.current_actor
+    status :subscribed
     queue.subscribe(:ack => true).each(:blocking => false) do |headers, payload|
+      status :receiving
       begin
         job = make_job(headers, payload)
         if can_service_job?(job)
@@ -36,15 +39,13 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
             headers.reject
           end
         else
-          @config.logger.error("Cannot service job #{job.describe} in queue for #{@worker.describe}")
+          status :rejected
           headers.reject
         end
+        status :subscribed
       rescue => err
+        status :error
         begin
-          @config.logger.error("Error bubbled up out of worker. This shouldn't happen. #{err.message}")
-          err.backtrace.each do |btr|
-            @config.logger.error("  #{btr}")
-          end
           headers.reject
         ensure
           worker.bail_out(err)
@@ -52,6 +53,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
       end
     end
     wait :spin_down
+    status :closing
   ensure
     client.close
   end
@@ -61,6 +63,7 @@ class Woodhouse::Runners::HotBunniesRunner < Woodhouse::Runner
   end
 
   def bail_out(err)
+    status :bailing_out, "#{err.class}: #{err.message}"
     raise Woodhouse::BailOut, "#{err.class}: #{err.message}"
   end
 

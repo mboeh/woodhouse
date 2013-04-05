@@ -27,6 +27,7 @@ class Woodhouse::Runner
   def initialize(worker, config)
     @worker = worker
     @config = config
+    @status_client = Woodhouse::Watchdog.client
     @config.logger.debug "Thread for #{@worker.describe} ready and waiting for jobs"
   end
 
@@ -35,6 +36,10 @@ class Woodhouse::Runner
   # stop the subscribe loop.
   def spin_down
     raise NotImplementedError, "implement #spin_down in a subclass of Woodhouse::Runner"
+  end
+
+  def current_status
+    @status
   end
 
   private
@@ -53,8 +58,13 @@ class Woodhouse::Runner
 
   # Executes a Job. See Woodhouse::JobExecution.
   def service_job(job) # :doc:
-    @config.logger.debug "Servicing job for #{@worker.describe}"
+    status :servicing
     Woodhouse::JobExecution.new(@config, job).execute
+  end
+
+  def status(stat, message = nil)
+    message ||= @worker.describe
+    @status_client.report stat, message
   end
 
 end
