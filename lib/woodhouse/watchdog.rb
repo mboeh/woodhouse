@@ -12,6 +12,14 @@ class Woodhouse::Watchdog
     notify id, Transition.new(last_status, status)
   end
 
+  def status_report
+    {}.tap do |hash|
+      @actors.each do |id, status|
+        hash[id.to_s] = status.to_h
+      end
+    end
+  end
+
   def listen(listener)
     @listeners << listener
   end
@@ -101,6 +109,11 @@ class Woodhouse::Watchdog
 
       freeze
     end
+
+    def to_h
+      { name: @name, message: @message, time: @time }
+    end
+
   end
 
   class Client

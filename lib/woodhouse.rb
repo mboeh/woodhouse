@@ -66,6 +66,10 @@ module Woodhouse
       global_configuration.dispatcher.update_job(*a)
     end
 
+    def watchdog
+      Woodhouse::Watchdog.instance
+    end
+
   end
 
   extend GlobalMethods
