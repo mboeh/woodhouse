@@ -92,6 +92,7 @@ require 'woodhouse/rails'
 require 'woodhouse/process'
 require 'woodhouse/layout_serializer'
 require 'woodhouse/trigger_set'
+require 'woodhouse/watchdog'
 
 require 'woodhouse/extension'
 require 'woodhouse/extensions/progress'

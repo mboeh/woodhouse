@@ -15,6 +15,11 @@ class Woodhouse::Process
       Thread.main.raise Interrupt
     end
 
+    Woodhouse::Watchdog.start
+    Woodhouse::Watchdog.listen do |id, transition|
+      Woodhouse.global_configuration.logger.info "[##{id}] #{transition}"
+    end
+
     begin
       @server.start!
       puts "Woodhouse serving as of #{Time.now}. Ctrl-C to stop."
@@ -25,6 +30,7 @@ class Woodhouse::Process
       @server.wait(:shutdown)
     ensure
       @server.terminate
+      Woodhouse::Watchdog.stop
       exit
     end
   end
