@@ -123,22 +123,40 @@ I've gotten good results from enabling aggressive heap tuning:
 * Configurable worker sets per server
 * Configurable number of threads per worker
 * Segmenting a single queue among multiple workers based on job characteristics (using AMQP header exchanges)
-* Progress reporting on jobs
-* New Relic background job reporting
+* Extension system
+* Progress reporting on jobs with the `progress` extension
+* New Relic background job reporting with the `new_relic` extension
+* Live status reporting with the `status` extension
 * Job dispatch and execution middleware stacks
+
+## Available Extensions
+
+Extensions are loaded in the `Woodhouse.configure` block. Some extensions take arguments.
+
+      Woodhouse.configure do |woodhouse|
+        woodhouse.extension :new_relic
+        woodhouse.extension :status, host: "127.0.0.1", port: "10786"
+      end
+
+### Built-In
+
+* *progress*: Live status reporting on the progress of jobs.
+* *new_relic*: New Relic background job monitoring.
+
+### Packaged Separately
+
+* [*status*][https://github.com/mboeh/woodhouse-status]: HTTP server embedded in Woodhouse to provide current status and liveness information via JSON.
 
 ## Upcoming 
 
 * Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting
 * Persistent configuration changes -- configuration changes saved to a data store and kept across deploys
-* Watchdog/status workers on every node
 * Web interface
 
 ## To Do
 
 * Examples and guides
 * More documentation
-* Watchdog system
 
 ## Supported Versions
 
