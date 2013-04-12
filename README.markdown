@@ -54,11 +54,20 @@ but also supplies additional functionality.
 The dispatcher used for sending out jobs can be set in the Woodhouse config block:
 
       Woodhouse.configure do |woodhouse|
-        woodhouse.dispatcher_type = :local # :local_pool | :amqp
+        woodhouse.dispatcher_type = :local # :local_pool | :amqp | :test
       end
       
 Calling the `async` version of a job method sends it to the currently configured dispatcher. The default dispatcher
 type is `:local`, which simply executes the job synchronously (although still passing it through middleware; see below).
+
+If you are running tests and you want to be able to test that your code is dispatching Woodhouse jobs (without running
+them), use the `:test` dispatcher and the dispatcher will simply accumulate jobs (of class Woodhouse::Job):
+
+      IsisWorker.async_pam_gossip :who => "Cyril"
+      that_job = Woodhouse.dispatcher.jobs.last
+      that_job.worker_class_name # ==> "IsisWorker"
+      that_job.job_method # ==> "pam_gossip"
+      that_job.arguments[:who] # ==> "Cyril"
 
 If you want `girl_friday` style in-process threaded backgrounding, you can get that by selecting the `:local_pool`
 dispatcher.

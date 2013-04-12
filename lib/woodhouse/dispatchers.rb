@@ -15,5 +15,6 @@ require 'woodhouse/dispatchers/local_dispatcher'
 require 'woodhouse/dispatchers/bunny_dispatcher'
 require 'woodhouse/dispatchers/hot_bunnies_dispatcher'
 require 'woodhouse/dispatchers/local_pool_dispatcher'
+require 'woodhouse/dispatchers/test_dispatcher'
 
 Woodhouse::Dispatchers::AmqpDispatcher = Woodhouse::Dispatchers.default_amqp_dispatcher 

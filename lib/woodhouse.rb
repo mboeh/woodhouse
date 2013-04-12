@@ -58,12 +58,16 @@ module Woodhouse
       RUBY_VERSION.to_f >= 1.9 or %w[jruby rbx].include?(RUBY_ENGINE)
     end
 
+    def dispatcher
+      global_configuration.dispatcher
+    end
+
     def dispatch(*a)
-      global_configuration.dispatcher.dispatch(*a)
+      dispatcher.dispatch(*a)
     end
 
     def update_job(*a)
-      global_configuration.dispatcher.update_job(*a)
+      dispatcher.update_job(*a)
     end
 
     def watchdog
