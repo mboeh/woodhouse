@@ -4,40 +4,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Woodhouse by mboeh</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-
+    <div class="wrapper">
       <header>
         <h1>Woodhouse</h1>
         <p>An AMQP-based background worker system for Ruby.</p>
+
+        <p class="view"><a href="https://github.com/mboeh/woodhouse">View the Project on GitHub <small>mboeh/woodhouse</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/mboeh/woodhouse/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/mboeh/woodhouse/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/mboeh/woodhouse">View On <strong>GitHub</strong></a></li>
+        </ul>
       </header>
-
-      <div id="banner">
-        <span id="logo"></span>
-
-        <a href="https://github.com/mboeh/woodhouse" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/mboeh/woodhouse/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/mboeh/woodhouse/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
-
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
       <section>
         <h1>Woodhouse</h1>
 
@@ -99,12 +88,22 @@ but also supplies additional functionality.</p>
 <p>The dispatcher used for sending out jobs can be set in the Woodhouse config block:</p>
 
 <pre><code>  Woodhouse.configure do |woodhouse|
-    woodhouse.dispatcher_type = :local # :local_pool | :amqp
+    woodhouse.dispatcher_type = :local # :local_pool | :amqp | :test
   end
 </code></pre>
 
 <p>Calling the <code>async</code> version of a job method sends it to the currently configured dispatcher. The default dispatcher
 type is <code>:local</code>, which simply executes the job synchronously (although still passing it through middleware; see below).</p>
+
+<p>If you are running tests and you want to be able to test that your code is dispatching Woodhouse jobs (without running
+them), use the <code>:test</code> dispatcher and the dispatcher will simply accumulate jobs (of class Woodhouse::Job):</p>
+
+<pre><code>  IsisWorker.async_pam_gossip :who =&gt; "Cyril"
+  that_job = Woodhouse.dispatcher.jobs.last
+  that_job.worker_class_name # ==&gt; "IsisWorker"
+  that_job.job_method # ==&gt; "pam_gossip"
+  that_job.arguments[:who] # ==&gt; "Cyril"
+</code></pre>
 
 <p>If you want <code>girl_friday</code> style in-process threaded backgrounding, you can get that by selecting the <code>:local_pool</code>
 dispatcher.</p>
@@ -166,22 +165,43 @@ I've gotten good results from enabling aggressive heap tuning:</p>
 <li>Configurable worker sets per server</li>
 <li>Configurable number of threads per worker</li>
 <li>Segmenting a single queue among multiple workers based on job characteristics (using AMQP header exchanges)</li>
-<li>Progress reporting on jobs</li>
-<li>New Relic background job reporting</li>
+<li>Extension system</li>
+<li>Progress reporting on jobs with the <code>progress</code> extension</li>
+<li>New Relic background job reporting with the <code>new_relic</code> extension</li>
+<li>Live status reporting with the <code>status</code> extension</li>
 <li>Job dispatch and execution middleware stacks</li>
+</ul><h2>Available Extensions</h2>
+
+<p>Extensions are loaded in the <code>Woodhouse.configure</code> block. Some extensions take arguments.</p>
+
+<pre><code>  Woodhouse.configure do |woodhouse|
+    woodhouse.extension :new_relic
+    woodhouse.extension :status, host: "127.0.0.1", port: "10786"
+  end
+</code></pre>
+
+<h3>Built-In</h3>
+
+<ul>
+<li>
+<em>progress</em>: Live status reporting on the progress of jobs.</li>
+<li>
+<em>new_relic</em>: New Relic background job monitoring.</li>
+</ul><h3>Packaged Separately</h3>
+
+<ul>
+<li>[*status*][<a href="https://github.com/mboeh/woodhouse-status%5D:">https://github.com/mboeh/woodhouse-status]:</a> HTTP server embedded in Woodhouse to provide current status and liveness information via JSON.</li>
 </ul><h2>Upcoming</h2>
 
 <ul>
 <li>Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting</li>
 <li>Persistent configuration changes -- configuration changes saved to a data store and kept across deploys</li>
-<li>Watchdog/status workers on every node</li>
 <li>Web interface</li>
 </ul><h2>To Do</h2>
 
 <ul>
 <li>Examples and guides</li>
 <li>More documentation</li>
-<li>Watchdog system</li>
 </ul><h2>Supported Versions</h2>
 
 <h3>woodhouse 0.1.x</h3>
@@ -203,11 +223,11 @@ been replaced.</p>
 <p>This library was developed for <a href="http://crowdcompass.com">CrowdCompass</a> and was released as open source with their permission.</p>
       </section>
       <footer>
-        <p>Project maintained by <a href="https://github.com/mboeh">mboeh</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+        <p>This project is maintained by <a href="https://github.com/mboeh">mboeh</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
