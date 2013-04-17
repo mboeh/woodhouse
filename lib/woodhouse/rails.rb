@@ -19,9 +19,7 @@ if defined?(Rails::Railtie)
   Woodhouse.extend Woodhouse::RailsExtensions
  
   class Woodhouse::Rails < Rails::Engine
-#    config.autoload_paths << Rails.root.join("app/workers")
-
-    initializer 'woodhouse' do
+    initializer 'woodhouse-defaults', before: :load_config_initializers do
       config_paths = %w[woodhouse.yml workling.yml].map{|file|
         Rails.root.join("config/" + file)
       }
@@ -40,6 +38,9 @@ if defined?(Rails::Railtie)
           end
         end
       end
+    end
+
+    initializer "woodhouse-layout" do
       Woodhouse.finish_loading_layout!
     end
   end
