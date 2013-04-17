@@ -165,6 +165,7 @@ Extensions are loaded in the `Woodhouse.configure` block. Some extensions take a
 * bunny 0.9.x, RabbitMQ 2.x or later
 * ruby 1.9
 * MRI, JRuby, Rubinius 2
+* JRuby note: JRuby 1.7.3 has a threading bug that affects Celluloid. Use 1.7.2 for now!
 
 ### woodhouse 0.0.x
 
