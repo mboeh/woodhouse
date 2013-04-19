@@ -40,124 +40,7 @@ goal is to provide a sane way for jobs on a given queue to be given special prio
 
 <p>Woodhouse 0.0.x is production-ready for Rails 2 and Ruby 1.8, while 0.1.x is in active development for Ruby 1.9.</p>
 
-<h2>Usage</h2>
-
-<h3>Rails</h3>
-
-<p>Add</p>
-
-<pre><code>  gem 'woodhouse', github: 'mboeh/woodhouse'
-</code></pre>
-
-<p>to your Gemfile.</p>
-
-<p>Run</p>
-
-<pre><code>  % rails generate woodhouse
-</code></pre>
-
-<p>to create script/woodhouse and config/initializers/woodhouse.rb.</p>
-
-<h3>Basic Usage</h3>
-
-<p>The simplest way to set up a worker class is to include Woodhouse::Worker and define public methods.</p>
-
-<pre><code>  class IsisWorker
-    include Woodhouse::Worker
-
-    def pam_gossip(job)
-      puts "Pam gossips about #{job[:who]}."
-    end
-
-    def sterling_insult(job)
-      puts "Sterling insults #{job[:who]}."
-    end
-  end
-</code></pre>
-
-<p>Jobs are dispatched asynchronously to a worker by adding <code>async_</code> to the method name:</p>
-
-<pre><code>  IsisWorker.async_pam_gossip :who =&gt; "Cyril"
-</code></pre>
-
-<p>Woodhouse jobs always take a hash of arguments. The worker receives a Woodhouse::Job, which acts like a hash
-but also supplies additional functionality.</p>
-
-<h3>Dispatchers</h3>
-
-<p>The dispatcher used for sending out jobs can be set in the Woodhouse config block:</p>
-
-<pre><code>  Woodhouse.configure do |woodhouse|
-    woodhouse.dispatcher_type = :local # :local_pool | :amqp | :test
-  end
-</code></pre>
-
-<p>Calling the <code>async</code> version of a job method sends it to the currently configured dispatcher. The default dispatcher
-type is <code>:local</code>, which simply executes the job synchronously (although still passing it through middleware; see below).</p>
-
-<p>If you are running tests and you want to be able to test that your code is dispatching Woodhouse jobs (without running
-them), use the <code>:test</code> dispatcher and the dispatcher will simply accumulate jobs (of class Woodhouse::Job):</p>
-
-<pre><code>  IsisWorker.async_pam_gossip :who =&gt; "Cyril"
-  that_job = Woodhouse.dispatcher.jobs.last
-  that_job.worker_class_name # ==&gt; "IsisWorker"
-  that_job.job_method # ==&gt; "pam_gossip"
-  that_job.arguments[:who] # ==&gt; "Cyril"
-</code></pre>
-
-<p>If you want <code>girl_friday</code> style in-process threaded backgrounding, you can get that by selecting the <code>:local_pool</code>
-dispatcher.</p>
-
-<p>Finally, if you want to run your jobs in a background process, you'll need to set up the <code>:amqp</code> dispatcher. This will
-use either the Hot Bunnies library (on JRuby) or the Bunny library (on all other Ruby engines). Bunny is suitable for
-dispatch but can be a little bit CPU-hungry in the background process. Hot Bunnies works great for both. You don't have
-to use the same Ruby version for your background process as for the dispatching application -- we use Woodhouse in production
-with a JRuby background process and MRI frontend processes.</p>
-
-<p>You'll also need to have RabbitMQ running. If it's running with the default (open) permissions on the local server, you don't
-need to configure it at all. Otherwise, you'll have to set the server connection info. You have two options for this. On Rails,
-you can create a config/woodhouse.yml file, formatted similar to config/database.yml:</p>
-
-<pre><code>  production:
-    host: myrabbitmq.server.local
-    vhost: /some-vhost
-</code></pre>
-
-<p>(The parameters accepted here are the same used for Bunny.connect; I promise to document them here soon.)</p>
-
-<p>Otherwise, you can do it in the Woodhouse config block:</p>
-
-<pre><code>  Woodhouse.configure do |woodhouse|
-    woodhouse.server_info = { :host =&gt; "myrabbitmq.server.local" }
-  end
-</code></pre>
-
-<h3>Running The Background Process</h3>
-
-<p>All you have to do is run <code>script/woodhouse</code>. It'll load your Rails environment and start the server process. It responds to QUIT
-and INT signals correctly; I'm working on seeing if I can get it to restart worker processes with HUP and to dump/load the current
-layout with USR1/USR2.</p>
-
-<p><code>script/woodhouse</code> logs job execution and results to <code>log/woodhouse.log</code>.</p>
-
-<h3>Performance Errata</h3>
-
-<p>If you're using JRuby with a large application, I've found that the JVM's permanent generation can get exhausted. If you have
-plenty of heap but still get GC overhead errors, try bumping up the PermGen by including this on the JRuby command line:</p>
-
-<pre><code>  -J-XX:MaxPermSize=128m
-</code></pre>
-
-<p>Performance will generally be better with the <code>--server</code> flag:</p>
-
-<pre><code>  --server
-</code></pre>
-
-<p>A lot of the jobs I run tend to allocate and dispose a lot of memory very quickly, and Woodhouse will be a long-running process.
-I've gotten good results from enabling aggressive heap tuning:</p>
-
-<pre><code>  -J-XX:+AggressiveHeap
-</code></pre>
+<p>Please look at the <a href="https://github.com/mboeh/woodhouse/wiki">wiki</a> for documentation.</p>
 
 <h2>Features</h2>
 
@@ -170,52 +53,13 @@ I've gotten good results from enabling aggressive heap tuning:</p>
 <li>New Relic background job reporting with the <code>new_relic</code> extension</li>
 <li>Live status reporting with the <code>status</code> extension</li>
 <li>Job dispatch and execution middleware stacks</li>
-</ul><h2>Available Extensions</h2>
-
-<p>Extensions are loaded in the <code>Woodhouse.configure</code> block. Some extensions take arguments.</p>
-
-<pre><code>  Woodhouse.configure do |woodhouse|
-    woodhouse.extension :new_relic
-    woodhouse.extension :status, host: "127.0.0.1", port: "10786"
-  end
-</code></pre>
-
-<h3>Built-In</h3>
-
-<ul>
-<li>
-<em>progress</em>: Live status reporting on the progress of jobs.</li>
-<li>
-<em>new_relic</em>: New Relic background job monitoring.</li>
-</ul><h3>Packaged Separately</h3>
-
-<ul>
-<li>[*status*][<a href="https://github.com/mboeh/woodhouse-status%5D:">https://github.com/mboeh/woodhouse-status]:</a> HTTP server embedded in Woodhouse to provide current status and liveness information via JSON.</li>
 </ul><h2>Upcoming</h2>
 
 <ul>
 <li>Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting</li>
 <li>Persistent configuration changes -- configuration changes saved to a data store and kept across deploys</li>
 <li>Web interface</li>
-</ul><h2>To Do</h2>
-
-<ul>
-<li>Examples and guides</li>
-<li>More documentation</li>
-</ul><h2>Supported Versions</h2>
-
-<h3>woodhouse 0.1.x</h3>
-
-<ul>
-<li>bunny 0.9.x, RabbitMQ 2.x or later</li>
-<li>ruby 1.9</li>
-<li>MRI, JRuby, Rubinius 2</li>
-</ul><h3>woodhouse 0.0.x</h3>
-
-<ul>
-<li>ruby 1.8</li>
-<li>MRI, JRuby, Rubinius</li>
-</ul><h3>Acknowledgements</h3>
+</ul><h2>Acknowledgements</h2>
 
 <p>Woodhouse originated in a substantially modified version of the Workling background worker system, although all code has since
 been replaced.</p>
