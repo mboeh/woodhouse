@@ -65,6 +65,8 @@ class Woodhouse::NodeConfiguration
   end
 
   def set(hash)
+    return unless hash
+
     hash.each do |key, val|
       if respond_to?("#{key}=")
         send("#{key}=", val)
