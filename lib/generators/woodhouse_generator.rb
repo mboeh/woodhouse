@@ -35,4 +35,17 @@ Woodhouse::Process.new.execute
     EOF
   end
 
+  def create_config
+    create_file "config/woodhouse.yml", <<-EOF
+development:
+  dispatcher_type: local
+test:
+  dispatcher_type: local
+production:
+  dispatcher_type: amqp
+  server_info:
+    host: localhost
+    EOF
+  end
+
 end

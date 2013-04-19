@@ -20,23 +20,24 @@ if defined?(Rails::Railtie)
  
   class Woodhouse::Rails < Rails::Engine
     initializer 'woodhouse-defaults', before: :load_config_initializers do
-      config_paths = %w[woodhouse.yml workling.yml].map{|file|
-        Rails.root.join("config/" + file)
-      }
+      # Legacy config file just containing AMQP information.
+      legacy_config_path = Rails.root.join("config/workling.yml")
+      # New config file containing any configuration options.
+      config_path = Rails.root.join("config/woodhouse.yml")
+      
       # Preload everything in app/workers so default layout includes them 
       Rails.root.join("app/workers").tap do |workers|
         Pathname.glob(workers.join("**/*.rb")).each do |worker_path|
           worker_path.relative_path_from(workers).basename(".rb").to_s.camelize.constantize
         end
       end
+
       # Set up reasonable defaults
       Woodhouse.configure do |config|
         config.logger = ::Rails.logger
-        config_paths.each do |path|
-          if File.exist?(path)
-            config.server_info = YAML.load(File.read(path))[::Rails.env]
-          end
-        end
+
+        config.load_yaml legacy_config_path, section: "server_info", environment: ::Rails.env
+        config.load_yaml config_path, environment: ::Rails.env
       end
     end
 

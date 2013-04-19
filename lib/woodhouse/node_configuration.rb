@@ -46,6 +46,32 @@ class Woodhouse::NodeConfiguration
     Woodhouse::Extension.install_extension(name, self, opts, &blk)
   end
 
+  def load_yaml(path, keyw = {})
+    return unless File.exist?(path)
+
+    section     = keyw[:section]
+    environment = keyw[:environment]
+
+    config_info = YAML.load(File.read(path))
+    
+    if environment
+      config_info = config_info[environment]
+    end
+    if section
+      config_info = { section => config_info }
+    end
+
+    set config_info
+  end
+
+  def set(hash)
+    hash.each do |key, val|
+      if respond_to?("#{key}=")
+        send("#{key}=", val)
+      end
+    end
+  end
+
   private
 
   def lookup_key(key, namespace)
