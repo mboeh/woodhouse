@@ -17,10 +17,22 @@
 
 <body><div id="wrap">
 <h1><a href="/">Woodhouse</a></h1>
-<p class="view"><a href="https://github.com/mboeh/woodhouse">View the Project on GitHub <small>mboeh/woodhouse</small></a></p>
+<p class="view"><a href="https://github.com/mboeh/woodhouse">View the Project on GitHub</p>
 <p><a href="http://travis-ci.org/mboeh/woodhouse"><img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status"></a></p>
 
 <p>An AMQP-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.</p>
+
+<p><strong>In your Gemfile:</strong></p>
+
+<pre>
+  gem "woodhouse", "~> 0.1.0"
+</pre>
+
+<p><strong>If you're using Rails:</strong></p>
+
+<pre>
+  % rails generate woodhouse
+</pre>
 
 <p>The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly
 in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary
@@ -41,7 +53,9 @@ goal is to provide a sane way for jobs on a given queue to be given special prio
 <li>New Relic background job reporting with the <code>new_relic</code> extension</li>
 <li>Live status reporting with the <code>status</code> extension</li>
 <li>Job dispatch and execution middleware stacks</li>
-</ul><h2>Upcoming</h2>
+</ul>
+
+<h2>Upcoming</h2>
 
 <ul>
 <li>Live reconfiguration of workers -- add or remove workers across one or more nodes without restarting</li>
