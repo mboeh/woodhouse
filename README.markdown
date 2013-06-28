@@ -2,7 +2,7 @@
 
 [<img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status" />](http://travis-ci.org/mboeh/woodhouse)
 
-An AMQP-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.
+A RabbitMQ-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.
 
 The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly
 in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary
