@@ -34,11 +34,11 @@
   % rails generate woodhouse
 </pre>
 
-<p>The use case for Woodhouse is for reliable and sane performance in situations where jobs on a single queue may vary significantly
+<p>TWoodhouse provides reliable and sane performance in situations where jobs from a single application may vary significantly
 in length. The goal is to permit large numbers of quick jobs to be serviced even when many slow jobs are in the queue. A secondary
-goal is to provide a sane way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.</p>
+goal is to provide an easy way for jobs on a given queue to be given special priority or dispatched to a server more suited to them.</p>
 
-<p>Woodhouse 0.0.x is production-ready for Rails 2 and Ruby 1.8, while 0.1.x is in active development for Ruby 1.9.</p>
+<p>Woodhouse 0.0.x is production-ready for Rails 2 and Ruby 1.8, while 0.1.x is production-ready for Ruby 1.9. Ruby 2.0 support is being validated, but shouldn't be a problem.</p>
 
 <p>Please look at the <a href="https://github.com/mboeh/woodhouse/wiki">wiki</a> for documentation.</p>
 
@@ -65,7 +65,7 @@ goal is to provide a sane way for jobs on a given queue to be given special prio
 </ul><h2>Acknowledgements</h2>
 
 <p>Woodhouse originated in a substantially modified version of the Workling background worker system, although all code has since
-been replaced.</p>
+been replaced, and backwards compatibility is not provided.</p>
 
 <p>This library was developed for <a href="http://crowdcompass.com">CrowdCompass</a> and was released as open source with their permission.</p>
 </div></body>
