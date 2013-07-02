@@ -18,7 +18,9 @@
 <body><div id="wrap">
 <h1><a href="/">Woodhouse</a></h1>
 <p class="view"><a href="https://github.com/mboeh/woodhouse">View the Project on GitHub</p>
+<p><a href="http://rdoc.info/github/mboeh/woodhouse/frames">View RDoc</a></p>
 <p><a href="http://travis-ci.org/mboeh/woodhouse"><img src="https://secure.travis-ci.org/mboeh/woodhouse.png?branch=master" alt="Build Status"></a></p>
+
 
 <p>A RabbitMQ-based worker system for Ruby designed to help with the backgrounding of both simple and complicated tasks.</p>
 
@@ -52,6 +54,10 @@ goal is to provide an easy way for jobs on a given queue to be given special pri
 <p>Woodhouse 0.0.x is production-ready for Rails 2 and Ruby 1.8, while 0.1.x is production-ready for Ruby 1.9. Ruby 2.0 support is being validated, but shouldn't be a problem.</p>
 
 <p>Please look at the <a href="https://github.com/mboeh/woodhouse/wiki">wiki</a> for documentation.</p>
+
+<h2>Compatibility Notes</h2>
+
+<p>JRuby 1.7.3 has a threading bug that breaks libraries and applications based on Celluloid, such as Woodhouse. JRuby 1.7.2 is safe. I've encountered issues related to JRuby 1.7.4, but I'm not sure yet whether it's an issue with Woodhouse, Celluloid, or my app. <b>JRuby 1.7.2 is currently the recommended Ruby version for Woodhouse.</b></p>
 
 <h2>Features</h2>
 
