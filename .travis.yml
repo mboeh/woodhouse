@@ -1,5 +1,7 @@
 language: ruby
 rvm:
   - 1.9.3
+  - 2.0.0
   - jruby-1.7.2
+  - jruby-1.7.4
   - rbx-19mode
