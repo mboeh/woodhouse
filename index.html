@@ -22,11 +22,21 @@
 
 <p>A RabbitMQ-based worker system for Ruby designed to help with the backgrounding of both simple and complicated tasks.</p>
 
+<h2>Install</h2>
+
+<p>First you need to have <a href="http://rabbitmq.com">RabbitMQ</a> installed. If you're on a recent Debian/Ubuntu-based system, the system package will work:</p>
+
+<pre>
+  # apt-get install rabbitmq-server
+</pre>
+
 <p><strong>In your Gemfile:</strong></p>
 
 <pre>
   gem "woodhouse", "~> 0.1.0"
 </pre>
+
+<p>After that, you just have to add Woodhouse to your application.</p>
 
 <p><strong>If you're using Rails:</strong></p>
 
