@@ -5,23 +5,22 @@ class Woodhouse::Runners::FileRunner < Woodhouse::Runner
 
   DEFAULT_QUEUE_DIR = '/tmp/woodhouse/queue'
 
-  def subscribe
-    server_info = @config.server_info || {}
+  def initialize(worker, config)
+    super
+
+    server_info = config.server_info || {}
     self.queue_dir = server_info[:path] || DEFAULT_QUEUE_DIR
     self.jobs_dir = "#{queue_dir}/jobs"
 
     unless File.directory?(jobs_dir) # subdirectory of queue_dir
-      @config.logger.debug "[Woodhouse initialize] Creating queue directory '#{queue_dir}'"
+      config.logger.debug "[Woodhouse initialize] Creating queue directory '#{queue_dir}'"
       FileUtils.mkdir_p jobs_dir
     end
+  end
 
+  def subscribe
     until @shutdown do
-      each_job do |job,queue_id|
-        if can_service_job?(job)
-          reserve_job(queue_id) { service_job(job) }
-        end
-      end
-
+      service_jobs
       sleep 5
     end
   end
@@ -31,8 +30,13 @@ class Woodhouse::Runners::FileRunner < Woodhouse::Runner
     signal :spin_down
   end
 
-
-  private
+  def service_jobs
+    each_job do |job,queue_id|
+      if can_service_job?(job)
+        reserve_job(queue_id) { service_job(job) }
+      end
+    end
+  end
 
   def each_job(&block)
     queue = Dir["#{queue_dir}/j-*"].sort
