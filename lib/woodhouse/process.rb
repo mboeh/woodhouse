@@ -26,9 +26,6 @@ class Woodhouse::Process
     end
 
     Woodhouse::Watchdog.start
-    Woodhouse::Watchdog.listen do |id, transition|
-      Woodhouse.global_configuration.logger.info "[##{id}] #{transition}"
-    end
 
     begin
       @server.start!
