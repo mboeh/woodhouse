@@ -3,8 +3,18 @@ class Woodhouse::Process
 
   def initialize(keyw = {})
     @server = keyw[:server] || build_default_server(keyw)
+    self.class.register_instance self
   end
-  
+
+  def self.register_instance(instance)
+    @instance = instance
+  end
+
+  # Returns the current global Woodhouse process instance, if it is running.
+  def self.instance
+    @instance
+  end
+
   def execute
     # Borrowed this from sidekiq. https://github.com/mperham/sidekiq/blob/master/lib/sidekiq/cli.rb
     trap "INT" do
@@ -25,14 +35,17 @@ class Woodhouse::Process
       puts "Woodhouse serving as of #{Time.now}. Ctrl-C to stop."
       @server.wait(:shutdown) 
     rescue Interrupt
-      puts "Shutting down."
-      @server.shutdown!
-      @server.wait(:shutdown)
+      shutdown
     ensure
       @server.terminate
       Woodhouse::Watchdog.stop
-      exit
     end
+  end
+
+  def shutdown
+    puts "Shutting down."
+    @server.shutdown!
+    @server.wait(:shutdown)
   end
 
   private
