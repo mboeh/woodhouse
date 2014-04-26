@@ -73,7 +73,7 @@ class Woodhouse::Runners::FileRunner < Woodhouse::Runner
 
     ensure
       # If file still hanging around then it failed
-      File.Util.mv(processing, failed) if File.exists?(processing)
+      FileUtils.mv(processing, failed) if File.exists?(processing)
     end
   end
 
