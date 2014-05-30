@@ -20,9 +20,9 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAm
     @pool.with do |conn|
       yield conn
     end
-  rescue Bunny::ClientTimeout
+  rescue Bunny::ClientTimeout => err
     if retried
-      raise
+      raise Woodhouse::ConnectionError, "timed out while contacting AMQP server: #{err.message}"
     else
       new_pool!
       retried = true
@@ -43,6 +43,8 @@ class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAm
     @bunny.start
 
     ConnectionPool.new { bunny.create_channel }
+  rescue Bunny::TCPConnectionFailed => err
+    raise Woodhouse::ConnectionError, "unable to connect to AMQP server: #{err.message}"
   end
 
 end
