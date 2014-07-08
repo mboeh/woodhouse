@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "woodhouse"
 
-  s.add_dependency 'celluloid', '~> 0.12.4'
+  s.add_dependency 'celluloid', '~> 0.15'
   s.add_dependency 'bunny', "~> 0.9.0.pre4"
   s.add_dependency 'connection_pool'
   s.add_dependency 'json'
