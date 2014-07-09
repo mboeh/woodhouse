@@ -52,7 +52,7 @@ class Woodhouse::Scheduler
         @config.logger.debug "Spinning up thread #{idx} for worker #{@worker_def.describe}"
         worker = @config.runner_type.new_link(@worker_def, @config)
         @threads << worker
-        worker.subscribe!
+        worker.async.subscribe
       end
     end
 

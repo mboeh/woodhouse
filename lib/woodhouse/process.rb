@@ -28,7 +28,7 @@ class Woodhouse::Process
     Woodhouse::Watchdog.start
 
     begin
-      @server.start!
+      @server.async.start
       puts "Woodhouse serving as of #{Time.now}. Ctrl-C to stop."
       @server.wait(:shutdown) 
     rescue Interrupt
@@ -41,7 +41,7 @@ class Woodhouse::Process
 
   def shutdown
     puts "Shutting down."
-    @server.shutdown!
+    @server.async.shutdown
     @server.wait(:shutdown)
   end
 
