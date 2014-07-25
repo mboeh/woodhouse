@@ -64,7 +64,7 @@ module Woodhouse::Progress
       begin
         channel = bunny.create_channel
         exchange = channel.direct("woodhouse.progress")
-        queue = channel.queue(job_id, :durable => true)
+        queue = channel.queue(job_id, :arguments => {"x-expires" => 5*60*1000})
         queue.bind(exchange, :routing_key => job_id)
         payload = nil
         queue.message_count.times do

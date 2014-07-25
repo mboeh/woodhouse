@@ -19,8 +19,7 @@ class Woodhouse::Dispatchers::CommonAmqpDispatcher < Woodhouse::Dispatcher
   def deliver_job_update(job, data)
     run do |client|
       exchange = client.exchange("woodhouse.progress", :type => :direct)
-      # establish durable queue to pick up updates
-      client.queue(job.job_id, :durable => true).bind(exchange, :routing_key => job.job_id)
+      client.queue(job.job_id, :arguments => {"x-expires" => 5*60*1000}).bind(exchange, :routing_key => job.job_id)
       exchange.publish(data.to_json, :routing_key => job.job_id)
     end
   end
