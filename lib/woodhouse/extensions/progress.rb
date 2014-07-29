@@ -143,7 +143,7 @@ module Woodhouse::Progress
     def update_progress(data)
       job = self
       sink = progress_sink
-      Celluloid::InternalPool.get { sink.update_job(job, data) }
+      Celluloid.internal_pool.get { sink.update_job(job, data) }
       nil
     end
 
