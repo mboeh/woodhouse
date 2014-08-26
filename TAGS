@@ -1,0 +1,523 @@
+
+./lib/generators/woodhouse_generator.rb,200
+class WoodhouseGenerator < Rails::Generators::BaseWoodhouseGenerator1,0
+  def create_initializercreate_initializer4,0
+  def create_scriptcreate_script20,0
+  def create_configcreate_config38,0
+
+./lib/woodhouse/dispatcher.rb,424
+class Woodhouse::DispatcherDispatcher1,0
+  def initialize(config, opts = {}, &blk)initialize3,0
+  def dispatch(class_name, job_method, arguments)dispatch8,0
+  def dispatch_job(job)dispatch_job12,0
+  def update_job(job, data = {})update_job19,0
+  def after_initialize(config, opts = {}, &blk)after_initialize25,0
+  def deliver_job(job)deliver_job29,0
+  def deliver_job_update(job, data)deliver_job_update33,0
+
+./lib/woodhouse/dispatchers/bunny_dispatcher.rb,299
+class Woodhouse::Dispatchers::BunnyDispatcher < Woodhouse::Dispatchers::CommonAmqpDispatcherBunnyDispatcher5,0
+  def initialize(config, opts = {}, &blk)initialize7,0
+  def publish_job(job, exchange)publish_job14,0
+  def runrun18,0
+  def new_pool!new_pool!35,0
+  def new_poolnew_pool39,0
+
+./lib/woodhouse/dispatchers/common_amqp_dispatcher.rb,224
+class Woodhouse::Dispatchers::CommonAmqpDispatcher < Woodhouse::DispatcherCommonAmqpDispatcher2,0
+  def run(&blk)run8,0
+  def deliver_job(job)deliver_job12,0
+  def deliver_job_update(job, data)deliver_job_update19,0
+
+./lib/woodhouse/dispatchers/file_dispatcher.rb,561
+class Woodhouse::Dispatchers::FileDispatcher < Woodhouse::DispatcherFileDispatcher3,0
+  attr_accessor :jobs_dir, :queue_dirjobs_dir4,0
+  attr_accessor :jobs_dir, :queue_dirjobs_dir=4,0
+  attr_accessor :jobs_dir, :queue_dirqueue_dir4,0
+  attr_accessor :jobs_dir, :queue_dirqueue_dir=4,0
+  DEFAULT_QUEUE_DIR = '/tmp/woodhouse/queue'DEFAULT_QUEUE_DIR6,0
+  def initialize(config, opts = {}, &blk)initialize8,0
+  def deliver_job(job)deliver_job24,0
+  def deliver_job_update(job, data)deliver_job_update34,0
+  def enqueue(job_filename)enqueue38,0
+
+./lib/woodhouse/dispatchers/hot_bunnies_dispatcher.rb,294
+class Woodhouse::Dispatchers::HotBunniesDispatcher < Woodhouse::Dispatchers::CommonAmqpDispatcherHotBunniesDispatcher15,0
+    def initialize(config, opts = {}, &blk)initialize24,0
+  def runrun33,0
+  def publish_job(job, exchange)publish_job39,0
+  def new_connectionnew_connection43,0
+
+./lib/woodhouse/dispatchers/local_dispatcher.rb,188
+class Woodhouse::Dispatchers::LocalDispatcher < Woodhouse::DispatcherLocalDispatcher1,0
+  def deliver_job(job)deliver_job5,0
+  def deliver_job_update(job, data)deliver_job_update9,0
+
+./lib/woodhouse/dispatchers/local_pool_dispatcher.rb,332
+class Woodhouse::Dispatchers::LocalPoolDispatcher < Woodhouse::DispatcherLocalPoolDispatcher1,0
+  class WorkerWorker3,0
+    def execute(executor)execute6,0
+  def after_initialize(config, opts = {}, &blk)after_initialize13,0
+  def deliver_job(job)deliver_job17,0
+  def deliver_job_update(job, data)deliver_job_update21,0
+
+./lib/woodhouse/dispatchers/test_dispatcher.rb,333
+class Woodhouse::Dispatchers::TestDispatcher < Woodhouse::DispatcherTestDispatcher3,0
+  attr_reader :jobsjobs6,0
+  attr_reader :job_updatesjob_updates8,0
+  def clear!clear!11,0
+  def after_initialize(*)after_initialize18,0
+  def deliver_job(job)deliver_job23,0
+  def deliver_job_update(job, data)deliver_job_update27,0
+
+./lib/woodhouse/dispatchers.rb,242
+module Woodhouse::DispatchersDispatchers1,0
+  def self.default_amqp_dispatcherdefault_amqp_dispatcher3,0
+Woodhouse::Dispatchers::AmqpDispatcher = Woodhouse::Dispatchers.default_amqp_dispatcher Woodhouse::Dispatchers::AmqpDispatcher21,0
+
+./lib/woodhouse/extension.rb,308
+class Woodhouse::ExtensionExtension4,0
+    attr_accessor :registryregistry8,0
+    attr_accessor :registryregistry=8,0
+    def register(name, extension)register10,0
+    def install_extension(name, configuration, opts = {}, &blk)install_extension14,0
+    def load_extension(name)load_extension23,0
+
+./lib/woodhouse/extensions/new_relic/instrumentation_middleware.rb,140
+class Woodhouse::NewRelic::InstrumentationMiddleware < Woodhouse::MiddlewareInstrumentationMiddleware1,0
+  def call(job, worker)call4,0
+
+./lib/woodhouse/extensions/new_relic.rb,120
+module Woodhouse::NewRelicNewRelic3,0
+    def install_extension(configuration, opts = {}, &blk)install_extension7,0
+
+./lib/woodhouse/extensions/progress.rb,1784
+module Woodhouse::ProgressProgress5,0
+    attr_accessor :clientclient9,0
+    attr_accessor :clientclient=9,0
+    def install_extension(configuration, opts = {}, &blk)install_extension11,0
+    def install!(configuration = Woodhouse.global_configuration)install!15,0
+    def pull(job_id)pull20,0
+    def pull_raw(job_id)pull_raw24,0
+  class ProgressClientProgressClient30,0
+    attr_accessor :configconfig31,0
+    attr_accessor :configconfig=31,0
+    def initialize(config)initialize33,0
+    def pull(job_id)pull37,0
+    def pull_raw(job_id)pull_raw44,0
+    def pull_progress(job_id)pull_progress50,0
+  class BunnyProgressClient < ProgressClientBunnyProgressClient56,0
+    def pull_progress(job_id)pull_progress60,0
+  class StatusTickerStatusTicker83,0
+    attr_accessor :toptop84,0
+    attr_accessor :toptop=84,0
+    attr_accessor :currentcurrent85,0
+    attr_accessor :currentcurrent=85,0
+    attr_accessor :statusstatus86,0
+    attr_accessor :statusstatus=86,0
+    def initialize(job, name, keyw = {})initialize88,0
+    def to_hashto_hash96,0
+    def count_attributescount_attributes100,0
+    def tick(keyw = {})tick106,0
+    alias call tickcall127,0
+    attr_accessor :job, :namejob131,0
+    attr_accessor :job, :namejob=131,0
+    attr_accessor :job, :namename131,0
+    attr_accessor :job, :namename=131,0
+  module JobWithProgressJobWithProgress135,0
+    attr_accessor :progress_sinkprogress_sink137,0
+    attr_accessor :progress_sinkprogress_sink=137,0
+    def status_ticker(name, keyw = {})status_ticker139,0
+    def update_progress(data)update_progress143,0
+    def progress_sinkprogress_sink150,0
+  class InjectProgress < Woodhouse::MiddlewareInjectProgress156,0
+    def call(job, worker)call158,0
+
+./lib/woodhouse/job.rb,1153
+class Woodhouse::JobJob4,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadworker_class_name5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadworker_class_name=5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadjob_method5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadjob_method=5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadarguments5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadarguments=5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadpayload5,0
+  attr_accessor :worker_class_name, :job_method, :arguments, :payloadpayload=5,0
+  def initialize(class_name = nil, method = nil, args = nil)initialize10,0
+  def job_idjob_id23,0
+  def to_hashto_hash27,0
+  def job_method=(value)job_method=34,0
+  def arguments=(h)arguments=38,0
+  def [](key)[]45,0
+  def maybe(meth, *args, &blk)maybe49,0
+  def exchange_nameexchange_name56,0
+  def queue_namequeue_name60,0
+  def describedescribe64,0
+  def generate_idgenerate_id68,0
+  def payloadpayload72,0
+
+./lib/woodhouse/job_execution.rb,324
+class Woodhouse::JobExecutionJobExecution1,0
+    attr_accessor :fatal_error_procfatal_error_proc4,0
+    attr_accessor :fatal_error_procfatal_error_proc=4,0
+  def initialize(config, job)initialize12,0
+  def executeexecute23,0
+  def symbolize_keys(hash)symbolize_keys49,0
+  def fatal_error?(err)fatal_error?56,0
+
+./lib/woodhouse/layout.rb,2195
+module WoodhouseWoodhouse1,0
+  class LayoutLayout23,0
+    def initializeinitialize26,0
+    def nodesnodes31,0
+    def add_node(node)add_node46,0
+    def node(name)node56,0
+    def frozen_clonefrozen_clone68,0
+    def changes_from(other_layout, node)changes_from78,0
+    def dump(serializer = Woodhouse::LayoutSerializer)dump82,0
+    def self.load(dumped, serializer = Woodhouse::LayoutSerializer)load86,0
+    def self.defaultdefault92,0
+    attr_writer :nodesnodes=101,0
+    class NodeNode109,0
+      attr_reader :namename112,0
+      def initialize(name)initialize114,0
+      def workersworkers120,0
+      def add_worker(worker)add_worker125,0
+      def remove_worker(worker)remove_worker130,0
+      def worker_for_job(job)worker_for_job135,0
+      def clearclear141,0
+      def default_configuration!(config, options = {})default_configuration!149,0
+      def frozen_clone # :nodoc:frozen_clone159,0
+      attr_writer :workersworkers=168,0
+    class WorkerWorker189,0
+      attr_reader :worker_class_name, :job_method, :threads, :criteriaworker_class_name190,0
+      attr_reader :worker_class_name, :job_method, :threads, :criteriajob_method190,0
+      attr_reader :worker_class_name, :job_method, :threads, :criteriathreads190,0
+      attr_reader :worker_class_name, :job_method, :threads, :criteriacriteria190,0
+      attr_accessor :flagsflags191,0
+      attr_accessor :flagsflags=191,0
+      def initialize(worker_class_name, job_method, opts = {})initialize193,0
+      def exchange_nameexchange_name203,0
+      def queue_namequeue_name207,0
+      def worker_class_name=(value)worker_class_name=211,0
+      def job_method=(value)job_method=215,0
+      def threads=(value)threads=219,0
+      def criteria=(value)criteria=223,0
+      def frozen_clonefrozen_clone227,0
+      def describedescribe231,0
+      def accepts_job?(job)accepts_job?235,0
+      def ==(other)==241,0
+    class ChangesChanges254,0
+      def initialize(new_layout, old_layout, node_name)initialize256,0
+      def addsadds264,0
+      def dropsdrops270,0
+      def old_workersold_workers278,0
+      def new_workersnew_workers282,0
+
+./lib/woodhouse/layout_builder.rb,424
+class Woodhouse::LayoutBuilderLayoutBuilder1,0
+  attr_reader :layoutlayout3,0
+  class NodeBuilderNodeBuilder5,0
+    def initialize(config, node)initialize7,0
+    def all_workers(options = {})all_workers12,0
+    def add(class_name, job_method, opts = {})add16,0
+    def remove(class_name, job_method = nil, opts = nil)remove31,0
+  def initialize(config, layout = nil)initialize43,0
+  def node(name)node50,0
+
+./lib/woodhouse/layout_serializer.rb,566
+class Woodhouse::LayoutSerializerLayoutSerializer3,0
+  def initialize(layout)initialize5,0
+  def as_hashas_hash9,0
+  def to_jsonto_json15,0
+  def self.dump(layout)dump19,0
+  def self.load(json)load23,0
+  class LayoutLoaderLayoutLoader27,0
+    def initialize(json)initialize29,0
+    def layoutlayout33,0
+  attr_reader :layoutlayout48,0
+  def node_list(nodes)node_list50,0
+  def node_hash(node)node_hash56,0
+  def worker_list(workers)worker_list63,0
+  def worker_hash(worker)worker_hash69,0
+  def criteria_hash(criteria)criteria_hash78,0
+
+./lib/woodhouse/middleware/airbrake_exceptions.rb,128
+class Woodhouse::Middleware::AirbrakeExceptions < Woodhouse::MiddlewareAirbrakeExceptions1,0
+  def call(job, worker)call3,0
+
+./lib/woodhouse/middleware/assign_logger.rb,116
+class Woodhouse::Middleware::AssignLogger < Woodhouse::MiddlewareAssignLogger1,0
+  def call(job, worker)call3,0
+
+./lib/woodhouse/middleware/log_dispatch.rb,130
+class Woodhouse::Middleware::LogDispatch < Woodhouse::MiddlewareLogDispatch1,0
+  def call(job)call3,0
+  def log(msg)log15,0
+
+./lib/woodhouse/middleware/log_jobs.rb,130
+class Woodhouse::Middleware::LogJobs < Woodhouse::MiddlewareLogJobs1,0
+  def call(job, worker)call3,0
+  def log(msg)log16,0
+
+./lib/woodhouse/middleware.rb,110
+class Woodhouse::MiddlewareMiddleware1,0
+  def initialize(config)initialize3,0
+  def call(*args)call7,0
+
+./lib/woodhouse/middleware_stack.rb,169
+class Woodhouse::MiddlewareStack < ArrayMiddlewareStack1,0
+  def initialize(config)initialize3,0
+  def call(*args, &final)call7,0
+  def make_stackmake_stack22,0
+
+./lib/woodhouse/mixin_registry.rb,253
+class Woodhouse::MixinRegistry < Woodhouse::Registry MixinRegistry1,0
+    def classesclasses5,0
+    def register(klass)register9,0
+    def register_worker(class_name, klass)register_worker13,0
+  def [](worker)[]19,0
+  def each(&blk)each23,0
+
+./lib/woodhouse/node_configuration.rb,2350
+class Woodhouse::NodeConfigurationNodeConfiguration1,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsregistry4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsregistry=4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsserver_info4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsserver_info=4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsrunner_type4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsrunner_type=4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsdispatcher_type4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsdispatcher_type=4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadslogger4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadslogger=4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsdefault_threads4,0
+  attr_accessor :registry, :server_info, :runner_type, :dispatcher_type, :logger, :default_threadsdefault_threads=4,0
+  attr_accessor :dispatcher_middleware, :runner_middlewaredispatcher_middleware5,0
+  attr_accessor :dispatcher_middleware, :runner_middlewaredispatcher_middleware=5,0
+  attr_accessor :dispatcher_middleware, :runner_middlewarerunner_middleware5,0
+  attr_accessor :dispatcher_middleware, :runner_middlewarerunner_middleware=5,0
+  attr_accessor :triggerstriggers6,0
+  attr_accessor :triggerstriggers=6,0
+  def initializeinitialize8,0
+  def at(event_name, &blk)at17,0
+  def dispatcherdispatcher21,0
+  def dispatcher_type=(value)dispatcher_type=25,0
+  def runner_type=(value)runner_type=33,0
+  def server_info=(hash)server_info=41,0
+  def extension(name, opts = {}, &blk)extension45,0
+  def load_yaml(path, keyw = {})load_yaml49,0
+  def set(hash)set67,0
+  def lookup_key(key, namespace)lookup_key79,0
+  def symbolize_keys(hash)symbolize_keys87,0
+  def self.defaultdefault95,0
+
+./lib/woodhouse/process.rb,290
+class Woodhouse::ProcessProcess2,0
+  def initialize(keyw = {})initialize4,0
+  def self.register_instance(instance)register_instance9,0
+  def self.instanceinstance14,0
+  def executeexecute18,0
+  def shutdownshutdown42,0
+  def build_default_server(keyw)build_default_server50,0
+
+./lib/woodhouse/queue_criteria.rb,511
+module WoodhouseWoodhouse1,0
+  class QueueCriteriaQueueCriteria3,0
+    attr_reader :criteriacriteria4,0
+    attr_accessor :exclusiveexclusive5,0
+    attr_accessor :exclusiveexclusive=5,0
+    def initialize(values = {}, flags = nil)initialize7,0
+    def ==(other)==18,0
+    def describedescribe22,0
+    def amqp_headersamqp_headers26,0
+    def queue_keyqueue_key31,0
+    def matches?(args)matches?37,0
+    def exclusive?exclusive?46,0
+    def stringify_values(hash)stringify_values52,0
+
+./lib/woodhouse/rails.rb,199
+  module Woodhouse::RailsExtensionsRailsExtensions2,0
+    def layout(&blk)layout3,0
+    def finish_loading_layout!finish_loading_layout!11,0
+  class Woodhouse::Rails < Rails::EngineRails21,0
+
+./lib/woodhouse/registry.rb,83
+class Woodhouse::RegistryRegistry1,0
+  def [](worker)[]4,0
+  def eacheach8,0
+
+./lib/woodhouse/runner.rb,348
+class Woodhouse::RunnerRunner23,0
+  def initialize(worker, config)initialize27,0
+  def spin_downspin_down37,0
+  def current_statuscurrent_status41,0
+  def subscribe # :doc:subscribe50,0
+  def can_service_job?(job) # :doc:can_service_job?55,0
+  def service_job(job) # :doc:service_job60,0
+  def status(stat, message = nil)status65,0
+
+./lib/woodhouse/runners/bunny_runner.rb,219
+class Woodhouse::Runners::BunnyRunner < Woodhouse::RunnerBunnyRunner3,0
+  def subscribesubscribe6,0
+  def bail_out(err)bail_out44,0
+  def spin_downspin_down48,0
+  def make_job(properties, payload)make_job52,0
+
+./lib/woodhouse/runners/dummy_runner.rb,134
+class Woodhouse::Runners::DummyRunner < Woodhouse::RunnerDummyRunner1,0
+  def subscribesubscribe3,0
+  def spin_downspin_down7,0
+
+./lib/woodhouse/runners/file_runner.rb,584
+class Woodhouse::Runners::FileRunner < Woodhouse::RunnerFileRunner3,0
+  attr_accessor :jobs_dir, :queue_dirjobs_dir4,0
+  attr_accessor :jobs_dir, :queue_dirjobs_dir=4,0
+  attr_accessor :jobs_dir, :queue_dirqueue_dir4,0
+  attr_accessor :jobs_dir, :queue_dirqueue_dir=4,0
+  DEFAULT_QUEUE_DIR = '/tmp/woodhouse/queue'DEFAULT_QUEUE_DIR6,0
+  def initialize(worker, config)initialize8,0
+  def subscribesubscribe21,0
+  def spin_downspin_down28,0
+  def service_jobsservice_jobs33,0
+  def each_job(&block)each_job41,0
+  def reserve_job(queue_id, &block)reserve_job52,0
+
+./lib/woodhouse/runners/hot_bunnies_runner.rb,228
+class Woodhouse::Runners::HotBunniesRunner < Woodhouse::RunnerHotBunniesRunner12,0
+  def subscribesubscribe21,0
+  def spin_downspin_down61,0
+  def bail_out(err)bail_out65,0
+  def make_job(message, payload)make_job72,0
+
+./lib/woodhouse/runners.rb,65
+module Woodhouse::RunnersRunners1,0
+  def self.guessguess3,0
+
+./lib/woodhouse/scheduler.rb,707
+class Woodhouse::SchedulerScheduler1,0
+  class SpunDown < StandardErrorSpunDown5,0
+  class WorkerSetWorkerSet9,0
+    attr_reader :workerworker13,0
+    def initialize(scheduler, worker, config)initialize16,0
+    def spin_downspin_down25,0
+    def wait_until_donewait_until_done36,0
+    def worker_died(actor, reason)worker_died42,0
+    def spin_upspin_up50,0
+  def initialize(config)initialize63,0
+  def start_worker(worker)start_worker68,0
+  def stop_worker(worker, wait = false)stop_worker78,0
+  def running_worker?(worker)running_worker?85,0
+  def spin_downspin_down89,0
+  def remove_worker(worker)remove_worker98,0
+  def worker_set_died(actor, reason)worker_set_died102,0
+
+./lib/woodhouse/server.rb,667
+module WoodhouseWoodhouse1,0
+  class ServerServer3,0
+    attr_reader :layout, :nodelayout7,0
+    attr_reader :layout, :nodenode7,0
+    attr_accessor :configurationconfiguration8,0
+    attr_accessor :configurationconfiguration=8,0
+    def initialize(keyw = {})initialize12,0
+    def layout=(value)layout=18,0
+    def node=(value)node=24,0
+    def startstart28,0
+    def reloadreload37,0
+    def ready_to_start?ready_to_start?41,0
+    def shutdownshutdown46,0
+    def scheduler_died(actor, reason)scheduler_died55,0
+    def dispatch_layout_changesdispatch_layout_changes59,0
+    def apply_layout_changes(changes)apply_layout_changes67,0
+
+./lib/woodhouse/trigger_set.rb,157
+class Woodhouse::TriggerSetTriggerSet1,0
+  def initializeinitialize3,0
+  def add(event_name, &blk)add7,0
+  def trigger(event_name, *args)trigger13,0
+
+./lib/woodhouse/version.rb,63
+module WoodhouseWoodhouse1,0
+  VERSION = "0.1.5"VERSION2,0
+
+./lib/woodhouse/watchdog.rb,1175
+class Woodhouse::WatchdogWatchdog1,0
+  def initializeinitialize4,0
+  def report(id, status)report9,0
+  def status_reportstatus_report15,0
+  def listen(listener)listen23,0
+  def notify(id, keyw = {})notify29,0
+    def instanceinstance37,0
+    def startstart41,0
+    def stopstop45,0
+    def client(id = nil)client52,0
+    def listen(listener = nil, &blk)listen56,0
+  class TransitionTransition64,0
+    attr_reader :old, :newold65,0
+    attr_reader :old, :newnew65,0
+    def initialize(old, new)initialize67,0
+    def namename72,0
+    def old_nameold_name76,0
+    def new_namenew_name80,0
+    def messagemessage84,0
+    def durationduration88,0
+    def duration_sduration_s92,0
+    def to_sto_s96,0
+  class StatusStatus102,0
+    attr_reader :name, :message, :timename103,0
+    attr_reader :name, :message, :timemessage103,0
+    attr_reader :name, :message, :timetime103,0
+    def initialize(name, message, time = Time.now)initialize105,0
+    def to_hto_h113,0
+  class ClientClient119,0
+    def initialize(watchdog, id = nil)initialize121,0
+    def detect_iddetect_id126,0
+    def report(name, message)report130,0
+
+./lib/woodhouse/worker.rb,473
+module Woodhouse::WorkerWorker38,0
+  def self.included(into)included40,0
+  attr_accessor :loggerlogger48,0
+  attr_accessor :loggerlogger=48,0
+  module ClassMethodsClassMethods50,0
+    def worker_nameworker_name52,0
+    def set_worker_name(name)set_worker_name60,0
+    def available_jobsavailable_jobs71,0
+    def only_jobs(*jobs)only_jobs75,0
+    def exclude_jobs(*jobs)exclude_jobs79,0
+    def method_missing(method, *args, &block)method_missing84,0
+
+./lib/woodhouse.rb,1005
+module WoodhouseWoodhouse1,0
+  WoodhouseError = Class.new(StandardError)WoodhouseError2,0
+  WorkerNotFoundError = Class.new(WoodhouseError)WorkerNotFoundError3,0
+  ConnectionError = Class.new(WoodhouseError)ConnectionError4,0
+  ConfigurationError = Class.new(WoodhouseError)ConfigurationError5,0
+  FatalError = Class.new(WoodhouseError)FatalError6,0
+  BailOut = Class.new(FatalError)BailOut7,0
+  module UtilUtil9,0
+    def expect_arg(name, klass, value)expect_arg13,0
+    def expect_arg_or_nil(name, klass, value)expect_arg_or_nil19,0
+    def camelize(string)camelize24,0
+  module GlobalMethods GlobalMethods32,0
+    def loggerlogger34,0
+    def global_configurationglobal_configuration38,0
+    def configureconfigure42,0
+    def global_layoutglobal_layout47,0
+    def layoutlayout51,0
+    def threading_safe?threading_safe?57,0
+    def dispatcherdispatcher61,0
+    def dispatch(*a)dispatch65,0
+    def update_job(*a)update_job69,0
+    def watchdogwatchdog73,0
+
+./spec/shared_contexts.rb,319
+class FakeWorkerFakeWorker3,0
+    attr_accessor :last_workerlast_worker6,0
+    attr_accessor :last_workerlast_worker=6,0
+    attr_accessor :jobsjobs7,0
+    attr_accessor :jobsjobs=7,0
+    def available_jobsavailable_jobs9,0
+  def initializeinitialize16,0
+  def foo(args)foo21,0
+  def bar(args)bar25,0
