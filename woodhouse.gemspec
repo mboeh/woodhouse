@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'celluloid', '~> 0.15'
   s.add_dependency 'bunny', "~> 0.9.0.pre4"
-  s.add_dependency 'connection_pool'
+  s.add_dependency 'connection_pool', '~> 2.0.0'
   s.add_dependency 'json'
   s.add_dependency 'cause'
 
