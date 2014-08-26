@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Matthew Boeh"]
   s.email       = ["matt@crowdcompass.com", "matthew.boeh@gmail.com"]
+  s.licenses    = ["MIT"]
   s.homepage    = "http://github.com/mboeh/woodhouse"
   s.summary     = %q{An AMQP-based background worker system for Ruby}
   s.description = %q{An AMQP-based background worker system for Ruby designed to make managing heterogenous tasks relatively easy.
@@ -19,10 +20,10 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "woodhouse"
 
   s.add_dependency 'celluloid', '~> 0.15'
-  s.add_dependency 'bunny', "~> 0.9.0.pre4"
-  s.add_dependency 'connection_pool'
-  s.add_dependency 'json'
-  s.add_dependency 'cause'
+  s.add_dependency 'bunny', "~> 0.9.8"
+  s.add_dependency 'connection_pool', '~> 2.0'
+  s.add_dependency 'json', '~> 1.8'
+  s.add_dependency 'cause', '~> 0.1'
 
   s.add_development_dependency 'rspec', '~> 1.3.1'
   s.add_development_dependency 'rake'
